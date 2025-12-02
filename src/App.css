@@ -1,0 +1,437 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root {
+  --radius: 0.8rem;
+  --background: #e3e3e3;
+  --foreground: #1a1a1a;
+  --card: #ffffff;
+  --card-foreground: #1a1a1a;
+  --popover: #ffffff;
+  --popover-foreground: #1a1a1a;
+  --primary: #1e40af;
+  --primary-foreground: #ffffff;
+  --secondary: #f8f8f8;
+  --secondary-foreground: #1a1a1a;
+  --muted: #f5f5f5;
+  --muted-foreground: #666666;
+  --accent: #f8f8f8;
+  --accent-foreground: #1a1a1a;
+  --destructive: #f87171;
+  --destructive-foreground: #ffffff;
+  --border: #e5e5e5;
+  --input: #f5f5f5;
+  --ring: #1e40af;
+  --chart-1: #3b82f6;
+  --chart-2: #60a5fa;
+  --chart-3: #93c5fd;
+  --chart-4: #bae6fd;
+  --chart-5: #e0f2fe;
+  --sidebar: #f8f8f8;
+  --sidebar-foreground: #2d2d2d;
+  --sidebar-primary: #1e40af;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #d0d0d0;
+  --sidebar-accent-foreground: #2d2d2d;
+  --sidebar-border: transparent;
+  --sidebar-ring: #1e40af;
+}
+
+.dark {
+  --background: #0f172a;
+  --foreground: #f8fafc;
+  --card: #1e293b;
+  --card-foreground: #f8fafc;
+  --popover: #1e293b;
+  --popover-foreground: #f8fafc;
+  --primary: #2563eb;
+  --primary-foreground: #ffffff;
+  --secondary: #334155;
+  --secondary-foreground: #f8fafc;
+  --muted: #334155;
+  --muted-foreground: #94a3b8;
+  --accent: #334155;
+  --accent-foreground: #f8fafc;
+  --destructive: #fca5a5;
+  --destructive-foreground: #ffffff;
+  --border: #334155;
+  --input: #334155;
+  --ring: #2563eb;
+  --chart-1: #3b82f6;
+  --chart-2: #60a5fa;
+  --chart-3: #93c5fd;
+  --chart-4: #bae6fd;
+  --chart-5: #f0f9ff;
+  --sidebar: #1e293b;
+  --sidebar-foreground: #f8fafc;
+  --sidebar-primary: #2563eb;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #334155;
+  --sidebar-accent-foreground: #f8fafc;
+  --sidebar-border: #334155;
+  --sidebar-ring: #2563eb;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  /* Clickable elements cursor */
+  button,
+  [role="button"],
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"],
+  [tabindex]:not([tabindex="-1"]),
+  a[href],
+  [data-clickable="true"],
+  [data-radix-menu-trigger],
+  [data-radix-dropdown-menu-trigger] {
+    cursor: pointer;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Nunito Sans', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  }
+
+  /* Hide scrollbars */
+  html {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+  }
+
+  html::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, and Opera */
+  }
+
+  /* Hide scrollbars for all scrollable elements */
+  * {
+    -ms-overflow-style: none; /* IE and Edge */
+  }
+
+  *::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, and Opera */
+  }
+}
+
+/* Perfect Neumorphism Utility Classes */
+@layer utilities {
+  /* Base Neumorphic Elements */
+  .neumorphic {
+    background: #f0f0f0;
+    border-radius: 16px;
+    box-shadow:
+      12px 12px 24px rgba(163, 177, 198, 0.6),
+      -12px -12px 24px rgba(255, 255, 255, 1);
+    transition: all 0.3s ease;
+  }
+
+  .neumorphic-inset {
+    background: #f0f0f0;
+    border-radius: 16px;
+    box-shadow:
+      inset 8px 8px 16px rgba(163, 177, 198, 0.4),
+      inset -8px -8px 16px rgba(255, 255, 255, 0.8);
+  }
+
+  .neumorphic-pressed {
+    background: #e8e8e8;
+    border-radius: 16px;
+    box-shadow:
+      inset 6px 6px 12px rgba(163, 177, 198, 0.5),
+      inset -6px -6px 12px rgba(255, 255, 255, 0.9);
+    transform: translateY(1px);
+  }
+
+  /* Interactive States */
+  .neumorphic-hover:hover {
+    box-shadow:
+      24px 24px 48px rgba(163, 177, 198, 0.8),
+      -24px -24px 48px rgba(255, 255, 255, 1);
+    transform: translateY(-4px);
+    transition: all 0.3s ease;
+  }
+
+  .neumorphic-active:active {
+    box-shadow:
+      inset 6px 6px 12px rgba(163, 177, 198, 0.6),
+      inset -6px -6px 12px rgba(255, 255, 255, 0.8);
+    transform: translateY(1px);
+    transition: all 0.2s ease;
+  }
+
+  /* Cards */
+  .neumorphic-card {
+    background: #f0f0f0;
+    border-radius: 20px;
+    box-shadow:
+      20px 20px 40px rgba(163, 177, 198, 0.4),
+      -20px -20px 40px rgba(255, 255, 255, 1);
+    transition: all 0.4s ease;
+  }
+
+  .neumorphic-card:hover {
+    box-shadow:
+      35px 35px 70px rgba(163, 177, 198, 0.6),
+      -35px -35px 70px rgba(255, 255, 255, 1);
+    transform: translateY(-5px);
+  }
+
+  /* Buttons */
+  .neumorphic-btn {
+    background: #f0f0f0;
+    border: none;
+    border-radius: 16px;
+    padding: 12px 24px;
+    box-shadow:
+      8px 8px 16px rgba(163, 177, 198, 0.5),
+      -8px -8px 16px rgba(255, 255, 255, 1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    color: #555555;
+  }
+
+  .neumorphic-btn:hover {
+    box-shadow:
+      18px 18px 36px rgba(163, 177, 198, 0.7),
+      -18px -18px 36px rgba(255, 255, 255, 1);
+    transform: translateY(-3px);
+  }
+
+  .neumorphic-btn:active {
+    box-shadow:
+      inset 4px 4px 8px rgba(163, 177, 198, 0.5),
+      inset -4px -4px 8px rgba(255, 255, 255, 0.9);
+    transform: translateY(1px);
+  }
+
+  .neumorphic-btn-primary {
+    background: #e8f4f8;
+    box-shadow:
+      8px 8px 16px rgba(163, 177, 198, 0.5),
+      -8px -8px 16px rgba(255, 255, 255, 1),
+      inset 0 0 0 1px rgba(100, 200, 255, 0.1);
+    color: #0066cc;
+  }
+
+  .neumorphic-btn-primary:hover {
+    box-shadow:
+      18px 18px 36px rgba(163, 177, 198, 0.7),
+      -18px -18px 36px rgba(255, 255, 255, 1),
+      inset 0 0 0 1px rgba(100, 200, 255, 0.2);
+  }
+
+  .neumorphic-btn-primary:active {
+    box-shadow:
+      inset 6px 6px 12px rgba(163, 177, 198, 0.6),
+      inset -6px -6px 12px rgba(255, 255, 255, 0.9),
+      inset 0 0 0 1px rgba(100, 200, 255, 0.3);
+  }
+
+  /* Soft Variants */
+  .neumorphic-soft {
+    background: #f5f5f5;
+    border-radius: 12px;
+    box-shadow:
+      6px 6px 12px rgba(163, 177, 198, 0.3),
+      -6px -6px 12px rgba(255, 255, 255, 0.9);
+  }
+
+  .neumorphic-soft:hover {
+    box-shadow:
+      14px 14px 28px rgba(163, 177, 198, 0.5),
+      -14px -14px 28px rgba(255, 255, 255, 0.95);
+    transform: translateY(-2px);
+  }
+
+  /* Input Fields */
+  .neumorphic-input {
+    background: #f0f0f0;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 16px;
+    box-shadow:
+      inset 4px 4px 8px rgba(163, 177, 198, 0.3),
+      inset -4px -4px 8px rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
+    font-size: 16px;
+    color: #555555;
+  }
+
+  .neumorphic-input:focus {
+    outline: none;
+    box-shadow:
+      inset 6px 6px 12px rgba(163, 177, 198, 0.4),
+      inset -6px -6px 12px rgba(255, 255, 255, 0.9),
+      0 0 0 3px rgba(100, 200, 255, 0.2);
+  }
+
+  .neumorphic-input::placeholder {
+    color: #999999;
+  }
+
+  /* Sidebar */
+  .neumorphic-sidebar {
+    background: #f0f0f0;
+    border-radius: 20px;
+    box-shadow:
+      inset 8px 8px 16px rgba(163, 177, 198, 0.3),
+      inset -8px -8px 16px rgba(255, 255, 255, 0.8);
+  }
+
+  /* Toggle Switches */
+  .neumorphic-toggle {
+    position: relative;
+    width: 60px;
+    height: 30px;
+    background: #f0f0f0;
+    border-radius: 15px;
+    box-shadow:
+      inset 4px 4px 8px rgba(163, 177, 198, 0.4),
+      inset -4px -4px 8px rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .neumorphic-toggle::before {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 24px;
+    height: 24px;
+    background: #f0f0f0;
+    border-radius: 50%;
+    box-shadow:
+      2px 2px 4px rgba(163, 177, 198, 0.3),
+      -2px -2px 4px rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
+  }
+
+  .neumorphic-toggle.active {
+    box-shadow:
+      inset -4px -4px 8px rgba(163, 177, 198, 0.4),
+      inset 4px 4px 8px rgba(255, 255, 255, 0.8);
+  }
+
+  .neumorphic-toggle.active::before {
+    transform: translateX(30px);
+    box-shadow:
+      -2px -2px 4px rgba(163, 177, 198, 0.3),
+      2px 2px 4px rgba(255, 255, 255, 0.8);
+  }
+
+  /* Progress Bars */
+  .neumorphic-progress {
+    background: #f0f0f0;
+    border-radius: 10px;
+    height: 8px;
+    box-shadow:
+      inset 2px 2px 4px rgba(163, 177, 198, 0.3),
+      inset -2px -2px 4px rgba(255, 255, 255, 0.8);
+    overflow: hidden;
+  }
+
+  .neumorphic-progress-bar {
+    height: 100%;
+    background: linear-gradient(145deg, #e8e8e8, #f0f0f0);
+    border-radius: 10px;
+    box-shadow:
+      2px 2px 4px rgba(163, 177, 198, 0.2),
+      -2px -2px 4px rgba(255, 255, 255, 0.8);
+    transition: width 0.3s ease;
+  }
+
+  /* Icons/Avatars */
+  .neumorphic-icon {
+    background: #f0f0f0;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow:
+      6px 6px 12px rgba(163, 177, 198, 0.4),
+      -6px -6px 12px rgba(255, 255, 255, 1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .neumorphic-icon:hover {
+    box-shadow:
+      12px 12px 24px rgba(163, 177, 198, 0.6),
+      -12px -12px 24px rgba(255, 255, 255, 1);
+    transform: translateY(-2px);
+  }
+
+  .neumorphic-icon:active {
+    box-shadow:
+      inset 3px 3px 6px rgba(163, 177, 198, 0.4),
+      inset -3px -3px 6px rgba(255, 255, 255, 0.8);
+    transform: translateY(1px);
+  }
+
+  /* Modal/Dialog */
+  .neumorphic-modal {
+    background: #f0f0f0;
+    border-radius: 24px;
+    box-shadow:
+      30px 30px 60px rgba(163, 177, 198, 0.4),
+      -30px -30px 60px rgba(255, 255, 255, 1);
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  /* Legacy support */
+  .neumorphic-inset-sidebar {
+    background: #f0f0f0;
+    border-radius: 16px;
+    box-shadow:
+      inset 8px 8px 16px rgba(163, 177, 198, 0.4),
+      inset -8px -8px 16px rgba(255, 255, 255, 0.8);
+  }
+}
