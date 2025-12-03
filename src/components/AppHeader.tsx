@@ -1,11 +1,13 @@
 import { SidebarTrigger } from "@/components/ui/sidebar"
 
 export function AppHeader() {
+  const user = JSON.parse(localStorage.getItem('user') || '{}')
+
   return (
     <header className="sticky top-0 z-40 flex h-16 items-center justify-between gap-4 px-4 bg-background/70 backdrop-blur-sm">
       <div className="flex items-center gap-3">
         <SidebarTrigger className="-ml-1" />
-        <span className="text-lg font-semibold">IMS Portal</span>
+        <span className="text-lg font-semibold">Welcome, {user.first_name} {user.last_name}</span>
       </div>
       <div className="flex items-center gap-2">
         <img

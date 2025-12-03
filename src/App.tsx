@@ -3,9 +3,10 @@ import './App.css'
 import { LoginPage } from '@/components/login-page'
 import { type LoginResponse, authAPI } from '@/api/auth'
 import { SidebarProvider } from '@/components/ui/sidebar'
-import { AppSidebar } from '@/components/admin/AppSidebar'
-import { AppHeader } from '@/components/admin/AppHeader'
+import { AppSidebar } from '@/components/AppSidebar'
+import { AppHeader } from '@/components/AppHeader'
 import { SuperAdminDashboard } from '@/components/admin/SuperAdminDashboard'
+import { ClinicAdminDashboard } from '@/components/clinic-admin/ClinicAdminDashboard'
 
 function App() {
   const [user, setUser] = useState<LoginResponse | null>(() => authAPI.getUser())
@@ -24,7 +25,7 @@ function App() {
     return <LoginPage onLogin={handleLogin} />
   }
 
-  // As of now, only build UI for superadmin
+  // Superadmin dashboard layout
   if (user.role === 'superadmin') {
     return (
       <SidebarProvider
@@ -43,6 +44,30 @@ function App() {
         <main className="flex-1 flex flex-col">
           <AppHeader />
           <SuperAdminDashboard user={user} />
+        </main>
+      </SidebarProvider>
+    )
+  }
+
+  // Clinic admin dashboard layout
+  if (user.role === 'clinic_admin') {
+    return (
+      <SidebarProvider
+        style={
+          {
+            '--sidebar-width': '16rem',
+            '--header-height': '4rem',
+          } as CSSProperties
+        }
+      >
+        <AppSidebar
+          variant="floating"
+          user={user}
+          onLogout={handleLogout}
+        />
+        <main className="flex-1 flex flex-col">
+          <AppHeader />
+          <ClinicAdminDashboard user={user} />
         </main>
       </SidebarProvider>
     )

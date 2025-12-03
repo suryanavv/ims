@@ -10,9 +10,14 @@ export function SuperAdminDashboard({ user }: SuperAdminDashboardProps) {
   const analytics = services.filter((s) => s.category === "analytics")
 
   const handleCardClick = (title: string) => {
-    // Placeholder - later this can navigate to specific application URLs
-    // eslint-disable-next-line no-console
-    console.log("Open application:", title, "for user", user.email)
+    const service = [...applications, ...analytics].find(s => s.title === title)
+    if (service?.url) {
+      window.open(service.url, '_blank')
+    } else {
+      // Placeholder - later this can navigate to specific application URLs
+      // eslint-disable-next-line no-console
+      console.log("Open application:", title, "for user", user.email)
+    }
   }
 
   return (
@@ -32,7 +37,7 @@ export function SuperAdminDashboard({ user }: SuperAdminDashboardProps) {
                   key={item.id}
                   role="button"
                   tabIndex={0}
-                  className="neumorphic-inset flex flex-col items-start gap-4 rounded-2xl p-5 min-h-[200px] hover:shadow-xl hover:scale-[1.02] transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                  className="neumorphic-inset flex flex-col items-start gap-4 rounded-2xl p-5 min-h-[200px] border-2 border-transparent hover:border-primary hover:shadow-xl hover:scale-[1.02] transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                   onClick={() => handleCardClick(item.title)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
@@ -41,10 +46,10 @@ export function SuperAdminDashboard({ user }: SuperAdminDashboardProps) {
                     }
                   }}
                 >
-                  <div className="inline-flex items-center justify-center rounded-2xl bg-secondary w-12 h-12">
-                    <Icon className="w-5 h-5 text-foreground" />
+                  <div className="inline-flex items-center justify-center rounded-2xl bg-secondary w-14 h-14">
+                    <Icon className="w-7 h-7 text-foreground" />
                   </div>
-                  <h4 className="text-base font-semibold text-left">
+                  <h4 className="text-xl font-semibold text-left">
                     {item.title}
                   </h4>
                 </div>
@@ -66,7 +71,7 @@ export function SuperAdminDashboard({ user }: SuperAdminDashboardProps) {
                   key={item.id}
                   role="button"
                   tabIndex={0}
-                  className="neumorphic-inset flex flex-col items-start gap-4 rounded-2xl p-5 min-h-[200px] hover:shadow-xl hover:scale-[1.02] transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                  className="neumorphic-inset flex flex-col items-start gap-4 rounded-2xl p-5 min-h-[200px] border-2 border-transparent hover:border-primary hover:shadow-xl hover:scale-[1.02] transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                   onClick={() => handleCardClick(item.title)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
@@ -75,10 +80,10 @@ export function SuperAdminDashboard({ user }: SuperAdminDashboardProps) {
                     }
                   }}
                 >
-                  <div className="inline-flex items-center justify-center rounded-2xl bg-secondary w-12 h-12">
-                    <Icon className="w-5 h-5 text-foreground" />
+                  <div className="inline-flex items-center justify-center rounded-2xl bg-secondary w-14 h-14">
+                    <Icon className="w-7 h-7 text-foreground" />
                   </div>
-                  <h4 className="text-base font-semibold text-left">
+                  <h4 className="text-xl font-semibold text-left">
                     {item.title}
                   </h4>
                 </div>

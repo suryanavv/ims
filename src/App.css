@@ -2,8 +2,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
-
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -44,73 +42,42 @@
 
 :root {
   --radius: 0.8rem;
-  --background: #e3e3e3;
+  /* Brighter base surface */
+  --background: #ffffff;
   --foreground: #1a1a1a;
   --card: #ffffff;
   --card-foreground: #1a1a1a;
   --popover: #ffffff;
   --popover-foreground: #1a1a1a;
-  --primary: #1e40af;
+  /* Green primary palette */
+  --primary: #00988e;
   --primary-foreground: #ffffff;
-  --secondary: #f8f8f8;
+  --secondary: #ffffff;
   --secondary-foreground: #1a1a1a;
   --muted: #f5f5f5;
   --muted-foreground: #666666;
-  --accent: #f8f8f8;
+  --accent: #ffffff;
   --accent-foreground: #1a1a1a;
   --destructive: #f87171;
   --destructive-foreground: #ffffff;
   --border: #e5e5e5;
   --input: #f5f5f5;
-  --ring: #1e40af;
-  --chart-1: #3b82f6;
-  --chart-2: #60a5fa;
-  --chart-3: #93c5fd;
-  --chart-4: #bae6fd;
-  --chart-5: #e0f2fe;
-  --sidebar: #f8f8f8;
+  --ring: #00b9ae;
+  /* Charts in green ramp */
+  --chart-1: #00b9ae;
+  --chart-2: #06b0bb;
+  --chart-3: #098289;
+  --chart-4: #00b9ae;
+  --chart-5: #06b0bb;
+  /* Sidebar tokens aligned to new primary */
+  --sidebar: #ffffff;
   --sidebar-foreground: #2d2d2d;
-  --sidebar-primary: #1e40af;
+  --sidebar-primary: #00b9ae;
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #d0d0d0;
   --sidebar-accent-foreground: #2d2d2d;
   --sidebar-border: transparent;
-  --sidebar-ring: #1e40af;
-}
-
-.dark {
-  --background: #0f172a;
-  --foreground: #f8fafc;
-  --card: #1e293b;
-  --card-foreground: #f8fafc;
-  --popover: #1e293b;
-  --popover-foreground: #f8fafc;
-  --primary: #2563eb;
-  --primary-foreground: #ffffff;
-  --secondary: #334155;
-  --secondary-foreground: #f8fafc;
-  --muted: #334155;
-  --muted-foreground: #94a3b8;
-  --accent: #334155;
-  --accent-foreground: #f8fafc;
-  --destructive: #fca5a5;
-  --destructive-foreground: #ffffff;
-  --border: #334155;
-  --input: #334155;
-  --ring: #2563eb;
-  --chart-1: #3b82f6;
-  --chart-2: #60a5fa;
-  --chart-3: #93c5fd;
-  --chart-4: #bae6fd;
-  --chart-5: #f0f9ff;
-  --sidebar: #1e293b;
-  --sidebar-foreground: #f8fafc;
-  --sidebar-primary: #2563eb;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #334155;
-  --sidebar-accent-foreground: #f8fafc;
-  --sidebar-border: #334155;
-  --sidebar-ring: #2563eb;
+  --sidebar-ring: #00b9ae;
 }
 
 @layer base {
@@ -160,7 +127,7 @@
 @layer utilities {
   /* Base Neumorphic Elements */
   .neumorphic {
-    background: #f0f0f0;
+    background: #ffffff;
     border-radius: 16px;
     box-shadow:
       12px 12px 24px rgba(163, 177, 198, 0.6),
@@ -169,7 +136,7 @@
   }
 
   .neumorphic-inset {
-    background: #f0f0f0;
+    background: #ffffff;
     border-radius: 16px;
     box-shadow:
       inset 8px 8px 16px rgba(163, 177, 198, 0.4),
@@ -177,7 +144,7 @@
   }
 
   .neumorphic-pressed {
-    background: #e8e8e8;
+    background: #f3f3f3;
     border-radius: 16px;
     box-shadow:
       inset 6px 6px 12px rgba(163, 177, 198, 0.5),
@@ -204,7 +171,7 @@
 
   /* Cards */
   .neumorphic-card {
-    background: #f0f0f0;
+    background: #ffffff;
     border-radius: 20px;
     box-shadow:
       20px 20px 40px rgba(163, 177, 198, 0.4),
@@ -221,7 +188,7 @@
 
   /* Buttons */
   .neumorphic-btn {
-    background: #f0f0f0;
+    background: #ffffff;
     border: none;
     border-radius: 16px;
     padding: 12px 24px;
@@ -249,31 +216,31 @@
   }
 
   .neumorphic-btn-primary {
-    background: #e8f4f8;
+    background: #e6f9f7;
     box-shadow:
-      8px 8px 16px rgba(163, 177, 198, 0.5),
+      8px 8px 16px rgba(163, 177, 198, 0.4),
       -8px -8px 16px rgba(255, 255, 255, 1),
-      inset 0 0 0 1px rgba(100, 200, 255, 0.1);
-    color: #0066cc;
+      inset 0 0 0 1px rgba(0, 185, 174, 0.4);
+    color: #00b9ae;
   }
 
   .neumorphic-btn-primary:hover {
     box-shadow:
       18px 18px 36px rgba(163, 177, 198, 0.7),
       -18px -18px 36px rgba(255, 255, 255, 1),
-      inset 0 0 0 1px rgba(100, 200, 255, 0.2);
+      inset 0 0 0 1px rgba(0, 185, 174, 0.55);
   }
 
   .neumorphic-btn-primary:active {
     box-shadow:
       inset 6px 6px 12px rgba(163, 177, 198, 0.6),
       inset -6px -6px 12px rgba(255, 255, 255, 0.9),
-      inset 0 0 0 1px rgba(100, 200, 255, 0.3);
+      inset 0 0 0 1px rgba(0, 185, 174, 0.7);
   }
 
   /* Soft Variants */
   .neumorphic-soft {
-    background: #f5f5f5;
+    background: #fafafa;
     border-radius: 12px;
     box-shadow:
       6px 6px 12px rgba(163, 177, 198, 0.3),
@@ -289,7 +256,7 @@
 
   /* Input Fields */
   .neumorphic-input {
-    background: #f0f0f0;
+    background: #ffffff;
     border: none;
     border-radius: 12px;
     padding: 12px 16px;
@@ -306,7 +273,7 @@
     box-shadow:
       inset 6px 6px 12px rgba(163, 177, 198, 0.4),
       inset -6px -6px 12px rgba(255, 255, 255, 0.9),
-      0 0 0 3px rgba(100, 200, 255, 0.2);
+      0 0 0 3px rgba(0, 185, 174, 0.25);
   }
 
   .neumorphic-input::placeholder {
@@ -315,7 +282,7 @@
 
   /* Sidebar */
   .neumorphic-sidebar {
-    background: #f0f0f0;
+    background: #ffffff;
     border-radius: 20px;
     box-shadow:
       inset 8px 8px 16px rgba(163, 177, 198, 0.3),
@@ -327,7 +294,7 @@
     position: relative;
     width: 60px;
     height: 30px;
-    background: #f0f0f0;
+    background: #ffffff;
     border-radius: 15px;
     box-shadow:
       inset 4px 4px 8px rgba(163, 177, 198, 0.4),
@@ -343,7 +310,7 @@
     left: 3px;
     width: 24px;
     height: 24px;
-    background: #f0f0f0;
+    background: #ffffff;
     border-radius: 50%;
     box-shadow:
       2px 2px 4px rgba(163, 177, 198, 0.3),
@@ -366,7 +333,7 @@
 
   /* Progress Bars */
   .neumorphic-progress {
-    background: #f0f0f0;
+    background: #ffffff;
     border-radius: 10px;
     height: 8px;
     box-shadow:
@@ -377,7 +344,7 @@
 
   .neumorphic-progress-bar {
     height: 100%;
-    background: linear-gradient(145deg, #e8e8e8, #f0f0f0);
+    background: linear-gradient(145deg, #e6f9f7, #00b9ae);
     border-radius: 10px;
     box-shadow:
       2px 2px 4px rgba(163, 177, 198, 0.2),
@@ -387,7 +354,7 @@
 
   /* Icons/Avatars */
   .neumorphic-icon {
-    background: #f0f0f0;
+    background: #ffffff;
     border-radius: 50%;
     width: 48px;
     height: 48px;
@@ -417,7 +384,7 @@
 
   /* Modal/Dialog */
   .neumorphic-modal {
-    background: #f0f0f0;
+    background: #ffffff;
     border-radius: 24px;
     box-shadow:
       30px 30px 60px rgba(163, 177, 198, 0.4),
@@ -428,7 +395,7 @@
 
   /* Legacy support */
   .neumorphic-inset-sidebar {
-    background: #f0f0f0;
+    background: #ffffff;
     border-radius: 16px;
     box-shadow:
       inset 8px 8px 16px rgba(163, 177, 198, 0.4),

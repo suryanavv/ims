@@ -1,6 +1,5 @@
 import {
   IconApps,
-  IconBuildingHospital,
   IconCalendarClock,
   IconChartBar,
   IconChartLine,
@@ -33,9 +32,10 @@ export const services: ServiceItem[] = [
   },
   {
     id: "clinics-dashboard",
-    title: "Clinics Dashboard",
+    title: "Clinqly Calendar",
     category: "applications",
-    icon: IconBuildingHospital,
+    icon: IconCalendarClock,
+    url: "https://staging.clinqly.ai/",
   },
   {
     id: "operations-dashboard",
@@ -54,6 +54,7 @@ export const services: ServiceItem[] = [
     title: "I-693 Application",
     category: "applications",
     icon: IconFileText,
+    url: "https://ezmedtech.com/",
   },
   {
     id: "ce-application",
@@ -63,9 +64,10 @@ export const services: ServiceItem[] = [
   },
   {
     id: "ezmedtech-onboarding",
-    title: "EzMedTech Clinic Onboarding Workflow",
+    title: "Clinic Onboarding",
     category: "applications",
     icon: IconApps,
+    url: "https://onboarding.clinqly.ai/",
   },
   {
     id: "medical-records-doctor",
@@ -98,6 +100,7 @@ export const services: ServiceItem[] = [
     title: "AR Dashboard",
     category: "analytics",
     icon: IconReportAnalytics,
+    url: "https://staging-ar.clinqly.ai/",
   },
   {
     id: "clinic-insights",

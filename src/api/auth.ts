@@ -20,6 +20,11 @@ export interface LoginRequest {
   password: string;
 }
 
+export interface RefreshTokenResponse {
+  access_token: string;
+  token_type: string;
+}
+
 export const authAPI = {
   /**
    * Login with email and password
@@ -103,6 +108,33 @@ export const authAPI = {
   },
 
   /**
+   * Refresh access token using refresh token cookie
+   */
+  async refreshToken(): Promise<string | null> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/auth/refresh`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        return null;
+      }
+
+      const data: RefreshTokenResponse = await response.json();
+
+      if (data.access_token) {
+        sessionStorage.setItem(TOKEN_STORAGE_KEY, data.access_token);
+        return data.access_token;
+      }
+
+      return null;
+    } catch {
+      return null;
+    }
+  },
+
+  /**
    * Check if user is authenticated
    */
   isAuthenticated(): boolean {
@@ -147,6 +179,44 @@ export const authAPI = {
     sessionStorage.removeItem(TOKEN_STORAGE_KEY);
     localStorage.removeItem('user');
     localStorage.removeItem('userRole');
+  },
+
+  /**
+   * Launch external service via SSO using current IMS session
+   */
+  async launchSSO(serviceName: string): Promise<void> {
+    // Ensure we have a valid access token (try refresh if needed)
+    let token = this.getToken();
+    if (!token) {
+      token = await this.refreshToken();
+    }
+
+    if (!token) {
+      throw new Error('Not authenticated. Please login again.');
+    }
+
+    const response = await fetch(
+      `${API_BASE_URL}/api/auth/sso-redirect?service=${encodeURIComponent(serviceName)}`,
+      {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+        credentials: 'include',
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ detail: 'Failed to get SSO redirect URL' }));
+      throw new Error(error.detail || 'Failed to get SSO redirect URL');
+    }
+
+    const data = await response.json();
+    if (data.redirect_url) {
+      window.open(data.redirect_url, '_blank', 'noopener');
+    } else {
+      throw new Error('SSO redirect URL not provided by server');
+    }
   },
 };
 
