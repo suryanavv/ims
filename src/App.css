@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sen:wght@400..800&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -42,42 +42,55 @@
 
 :root {
   --radius: 0.8rem;
-  /* Brighter base surface */
+  /* Brand Color Palette */
+  /* Primary Colors - Teals and deep greens */
+  --bright-teal: #14B5AA;
+  --dark-teal: #005C55;
+  --deep-forest: #00332D;
+  /* Secondary Colors - Accent colors */
+  --vibrant-orange: #FF8200;
+  --burnt-sienna: #9C4300;
+  /* Tertiary Colors - Background and neutral tones */
+  --pale-mint: #E0F7F4;
+  --midnight-green: #01211C;
+  
+  /* Base surface */
+  /* --background: #E0F7F4; */
   --background: #ffffff;
-  --foreground: #1a1a1a;
+  --foreground: #01211C;
   --card: #ffffff;
-  --card-foreground: #1a1a1a;
+  --card-foreground: #01211C;
   --popover: #ffffff;
-  --popover-foreground: #1a1a1a;
-  /* Green primary palette */
-  --primary: #00988e;
+  --popover-foreground: #01211C;
+  /* Primary palette - Bright Teal */
+  --primary: #14B5AA;
   --primary-foreground: #ffffff;
   --secondary: #ffffff;
-  --secondary-foreground: #1a1a1a;
-  --muted: #f5f5f5;
-  --muted-foreground: #666666;
-  --accent: #ffffff;
-  --accent-foreground: #1a1a1a;
-  --destructive: #f87171;
+  --secondary-foreground: #01211C;
+  --muted: #E0F7F4;
+  --muted-foreground: #005C55;
+  --accent: #FF8200;
+  --accent-foreground: #ffffff;
+  --destructive: #FF8200;
   --destructive-foreground: #ffffff;
-  --border: #e5e5e5;
-  --input: #f5f5f5;
-  --ring: #00b9ae;
-  /* Charts in green ramp */
-  --chart-1: #00b9ae;
-  --chart-2: #06b0bb;
-  --chart-3: #098289;
-  --chart-4: #00b9ae;
-  --chart-5: #06b0bb;
-  /* Sidebar tokens aligned to new primary */
+  --border: rgba(20, 181, 170, 0.2);
+  --input: #E0F7F4;
+  --ring: #14B5AA;
+  /* Charts in teal ramp */
+  --chart-1: #14B5AA;
+  --chart-2: #005C55;
+  --chart-3: #00332D;
+  --chart-4: #14B5AA;
+  --chart-5: #005C55;
+  /* Sidebar tokens aligned to brand primary */
   --sidebar: #ffffff;
-  --sidebar-foreground: #2d2d2d;
-  --sidebar-primary: #00b9ae;
+  --sidebar-foreground: #01211C;
+  --sidebar-primary: #daf9f7;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #d0d0d0;
-  --sidebar-accent-foreground: #2d2d2d;
+  --sidebar-accent: #E0F7F4;
+  --sidebar-accent-foreground: #01211C;
   --sidebar-border: transparent;
-  --sidebar-ring: #00b9ae;
+  --sidebar-ring: #14B5AA;
 }
 
 @layer base {
@@ -100,27 +113,40 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: 'Nunito Sans', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    font-family: 'Sen', sans-serif;
+    text-transform: capitalize;
   }
 
-  /* Hide scrollbars */
-  html {
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE and Edge */
-  }
+  
 
-  html::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, and Opera */
-  }
-
-  /* Hide scrollbars for all scrollable elements */
+  /* Scrollbars for all scrollable elements */
   * {
-    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: auto;
+    scrollbar-color: rgba(1, 122, 112, 0.8) rgba(255, 255, 255, 0.9);
   }
 
   *::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, and Opera */
+    width: 16px;
+    height: 16px;
   }
+
+  *::-webkit-scrollbar-track {
+    border-radius: 10px;
+    box-shadow: inset 2px 2px 4px rgba(0, 92, 85, 0.2);
+  }
+
+  *::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    border: 3px solid rgba(255, 255, 255, 0.9);
+    box-shadow: 
+      inset 2px 2px 4px rgba(0, 92, 85, 0.5),
+      inset -2px -2px 4px rgba(255, 255, 255, 0.9);
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    border: 3px solid rgba(255, 255, 255, 1);
+  }
+
 }
 
 /* Perfect Neumorphism Utility Classes */
@@ -216,26 +242,26 @@
   }
 
   .neumorphic-btn-primary {
-    background: #e6f9f7;
+    background: #E0F7F4;
     box-shadow:
       8px 8px 16px rgba(163, 177, 198, 0.4),
       -8px -8px 16px rgba(255, 255, 255, 1),
-      inset 0 0 0 1px rgba(0, 185, 174, 0.4);
-    color: #00b9ae;
+      inset 0 0 0 1px rgba(20, 181, 170, 0.4);
+    color: #14B5AA;
   }
 
   .neumorphic-btn-primary:hover {
     box-shadow:
       18px 18px 36px rgba(163, 177, 198, 0.7),
       -18px -18px 36px rgba(255, 255, 255, 1),
-      inset 0 0 0 1px rgba(0, 185, 174, 0.55);
+      inset 0 0 0 1px rgba(20, 181, 170, 0.55);
   }
 
   .neumorphic-btn-primary:active {
     box-shadow:
       inset 6px 6px 12px rgba(163, 177, 198, 0.6),
       inset -6px -6px 12px rgba(255, 255, 255, 0.9),
-      inset 0 0 0 1px rgba(0, 185, 174, 0.7);
+      inset 0 0 0 1px rgba(20, 181, 170, 0.7);
   }
 
   /* Soft Variants */
@@ -344,12 +370,34 @@
 
   .neumorphic-progress-bar {
     height: 100%;
-    background: linear-gradient(145deg, #e6f9f7, #00b9ae);
+    background: linear-gradient(145deg, #E0F7F4, #14B5AA);
     border-radius: 10px;
     box-shadow:
-      2px 2px 4px rgba(163, 177, 198, 0.2),
+      2px 2px 4px rgba(0, 92, 85, 0.2),
       -2px -2px 4px rgba(255, 255, 255, 0.8);
     transition: width 0.3s ease;
+  }
+
+  /* Extra-thin scrollbar specifically for time picker lists */
+  .timepicker-scroll {
+    scrollbar-width: thin; /* Firefox */
+  }
+
+  .timepicker-scroll::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .timepicker-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .timepicker-scroll::-webkit-scrollbar-thumb {
+    background: rgba(1, 122, 112, 0.6); /* brandish teal */
+    border-radius: 9999px;
+  }
+
+  .timepicker-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgba(1, 122, 112, 0.9);
   }
 
   /* Icons/Avatars */

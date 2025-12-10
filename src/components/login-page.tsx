@@ -80,22 +80,23 @@ export function LoginPage({ onLogin }: LoginPageProps) {
       {/* Left hero panel (desktop) */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-primary">
         <div className="relative z-10 flex flex-col justify-between w-full px-12 py-12">
-          <div className="flex items-center">
-            <h1 className="text-xl font-semibold text-white">EZ Medtech</h1>
+          <div className="flex items-center gap-2">
+            <img src="/logo.svg" alt="EZ Medtech Logo" className="w-8 h-8 object-contain rounded-full" />
+            <h1 className="text-xl font-semibold">EZMedTech</h1>
           </div>
 
           <div className="flex-1 flex flex-col justify-center">
-            <h2 className="text-4xl text-white mb-6 leading-tight">
+            <h2 className="text-4xl mb-6 leading-tight">
               Secure access to your IMS portal
             </h2>
-            <p className="text-white/90 text-lg leading-relaxed">
+            <p className="text-lg leading-relaxed">
               Sign in to manage clinics, providers, and operations in one unified dashboard.
             </p>
           </div>
 
-          <div className="flex justify-between items-center text-white/70 text-sm">
-            <span>© IMS</span>
-            <span className="cursor-pointer hover:text-white/90">Privacy & Security</span>
+          <div className="flex justify-between items-center text-sm">
+            <span>© 2025 EZMedTech. All rights reserved.</span>
+            <span className="cursor-pointer hover:text-white/90">Privacy Policy</span>
           </div>
         </div>
       </div>
@@ -112,14 +113,14 @@ export function LoginPage({ onLogin }: LoginPageProps) {
           </div>
 
           <div className="space-y-4">
-            <div className="text-center">
+            {/* <div className="text-center">
               <h2 className="text-2xl sm:text-3xl text-foreground font-semibold">
                 IMS Login
               </h2>
               <p className="text-sm sm:text-base text-muted-foreground mt-2">
                 Identity Management Service
               </p>
-            </div>
+            </div> */}
 
             {/* Error Message */}
             {error && (
@@ -208,7 +209,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
                 disabled={loading || microsoftLoading || googleLoading}
                 className="w-full text-sm font-medium neumorphic-pressed text-primary hover:text-primary-foreground rounded-lg shadow-none cursor-pointer transition-all duration-200 px-3 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <span>{loading ? "Signing In..." : "Sign In with Password"}</span>
+                <span>{loading ? "Signing In..." : "Sign In"}</span>
                 {!loading && <span className="text-lg ml-2">→</span>}
               </Button>
             </form>

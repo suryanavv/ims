@@ -17,6 +17,7 @@ import {
 import { services } from "@/components/services-config"
 import type { LoginResponse } from "@/api/auth"
 import { dashboardAPI } from "@/api/dashboard"
+import { authAPI } from "@/api/auth"
 
 export function AppSidebar({
   user,
@@ -28,6 +29,7 @@ export function AppSidebar({
 }) {
    const [allowedServiceIds, setAllowedServiceIds] = React.useState<string[] | null>(null)
    const [loadingServices, setLoadingServices] = React.useState(user.role === "clinic_admin")
+   const [serviceNameMap, setServiceNameMap] = React.useState<Map<string, string>>(new Map())
 
   React.useEffect(() => {
     let isMounted = true
@@ -70,24 +72,64 @@ export function AppSidebar({
         if (!isMounted) return
 
         const matchedIds = new Set<string>()
+        const nameMap = new Map<string, string>()
 
-        // Map known service keys from backend to sidebar service ids
-        for (const key of keys) {
-          if (key.includes("calendar") || key === "voice-agent") {
-            matchedIds.add("clinics-dashboard")
+        // Store original names from backend for SSO
+        if (data.integrations && Array.isArray(data.integrations)) {
+          for (const item of data.integrations) {
+            const name =
+              (typeof item.integration_name === "string"
+                ? item.integration_name
+                : typeof item.service_name === "string"
+                  ? item.service_name
+                  : "") || ""
+            if (!name) continue
+            const key = name.toLowerCase().replace(/\s+/g, "-")
+            
+            // Map known service keys from backend to sidebar service ids
+            if (key.includes("calendar") || key === "voice-agent") {
+              matchedIds.add("clinics-dashboard")
+              nameMap.set("clinics-dashboard", name)
+            }
+            if (key === "i-693" || key === "i693") {
+              matchedIds.add("i-693-application")
+              nameMap.set("i-693-application", name)
+            }
+            if (key === "dental" || key === "open-dental" || key.includes("onboarding")) {
+              matchedIds.add("ezmedtech-onboarding")
+              nameMap.set("ezmedtech-onboarding", name)
+            }
+            if (key === "ar" || key.includes("account-receivable")) {
+              matchedIds.add("ar-dashboard")
+              nameMap.set("ar-dashboard", name)
+            }
           }
-          if (key === "i-693" || key === "i693") {
-            matchedIds.add("i-693-application")
-          }
-          if (key === "dental" || key === "open-dental" || key.includes("onboarding")) {
-            matchedIds.add("ezmedtech-onboarding")
-          }
-          if (key === "ar" || key.includes("account-receivable")) {
-            matchedIds.add("ar-dashboard")
+        }
+
+        if (data.forms && Array.isArray(data.forms)) {
+          for (const item of data.forms) {
+            const name = typeof item.form_name === "string" ? item.form_name : ""
+            if (!name) continue
+            const key = name.toLowerCase().replace(/\s+/g, "-")
+            
+            // Map known service keys from backend to sidebar service ids
+            if (key === "i-693" || key === "i693") {
+              matchedIds.add("i-693-application")
+              nameMap.set("i-693-application", name)
+            }
+            if (key === "dental" || key === "open-dental" || key.includes("onboarding")) {
+              matchedIds.add("ezmedtech-onboarding")
+              nameMap.set("ezmedtech-onboarding", name)
+            }
+            if (key === "ar" || key.includes("account-receivable")) {
+              matchedIds.add("ar-dashboard")
+              nameMap.set("ar-dashboard", name)
+            }
           }
         }
 
         setAllowedServiceIds(Array.from(matchedIds))
+        setServiceNameMap(nameMap)
       } catch {
         if (!isMounted) return
         // On failure, fall back to showing nothing filtered (no extra handling needed)
@@ -116,6 +158,31 @@ export function AppSidebar({
 
   const [appsOpen, setAppsOpen] = React.useState(true)
   const [analyticsOpen, setAnalyticsOpen] = React.useState(true)
+
+  const handleServiceClick = async (service: (typeof services)[number]) => {
+    // For superadmin, just open URL directly if available
+    if (user.role === "superadmin") {
+      if (service.url) {
+        window.open(service.url, "_blank", "noopener")
+      }
+      return
+    }
+
+    // For clinic_admin, use SSO
+    if (user.role === "clinic_admin") {
+      const originalName = serviceNameMap.get(service.id) || service.title
+      try {
+        await authAPI.launchSSO(originalName)
+      } catch (err) {
+        // If SSO fails, fall back to direct URL if available
+        // eslint-disable-next-line no-console
+        console.warn("SSO launch failed, falling back to direct URL:", err)
+        if (service.url) {
+          window.open(service.url, "_blank", "noopener")
+        }
+      }
+    }
+  }
 
   return (
     <Sidebar {...props}>
@@ -163,7 +230,10 @@ export function AppSidebar({
               <SidebarMenu>
                 {applications.map((item) => (
                   <SidebarMenuItem key={item.id}>
-                    <SidebarMenuButton className="text-sm pl-6">
+                    <SidebarMenuButton 
+                      className="text-sm pl-6 cursor-pointer"
+                      onClick={() => void handleServiceClick(item)}
+                    >
                       <span>{item.title}</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -201,7 +271,10 @@ export function AppSidebar({
               <SidebarMenu>
                 {analytics.map((item) => (
                   <SidebarMenuItem key={item.id}>
-                    <SidebarMenuButton className="text-sm pl-6">
+                    <SidebarMenuButton 
+                      className="text-sm pl-6 cursor-pointer"
+                      onClick={() => void handleServiceClick(item)}
+                    >
                       <span>{item.title}</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
