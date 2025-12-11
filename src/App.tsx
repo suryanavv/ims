@@ -7,6 +7,8 @@ import { AppSidebar } from '@/components/AppSidebar'
 import { AppHeader } from '@/components/AppHeader'
 import { SuperAdminDashboard } from '@/components/admin/SuperAdminDashboard'
 import { ClinicAdminDashboard } from '@/components/clinic-admin/ClinicAdminDashboard'
+import { SuperAdminProvider, useSuperAdmin } from '@/contexts/super-admin-context'
+import { SuperAdminLayout } from '@/components/super-admin/SuperAdminLayout'
 
 function App() {
   const [user, setUser] = useState<LoginResponse | null>(() => authAPI.getUser())
@@ -25,27 +27,12 @@ function App() {
     return <LoginPage onLogin={handleLogin} />
   }
 
-  // Superadmin dashboard layout
+  // Superadmin dashboard layout - wrap with provider
   if (user.role === 'superadmin') {
     return (
-      <SidebarProvider
-        style={
-          {
-            '--sidebar-width': '16rem',
-            '--header-height': '4rem',
-          } as CSSProperties
-        }
-      >
-        <AppSidebar
-          variant="floating"
-          user={user}
-          onLogout={handleLogout}
-        />
-        <main className="flex-1 flex flex-col">
-          <AppHeader />
-          <SuperAdminDashboard user={user} />
-        </main>
-      </SidebarProvider>
+      <SuperAdminProvider>
+        <SuperAdminContent user={user} onLogout={handleLogout} />
+      </SuperAdminProvider>
     )
   }
 
@@ -93,4 +80,43 @@ function App() {
   )
 }
 
+// Separate component to use the context hook
+function SuperAdminContent({
+  user,
+  onLogout,
+}: {
+  user: LoginResponse
+  onLogout: () => Promise<void>
+}) {
+  const { isOpen } = useSuperAdmin()
+
+  // Show full-screen Super Admin Dashboard when open
+  if (isOpen) {
+    return <SuperAdminLayout user={user} onLogout={onLogout} />
+  }
+
+  // Show main IMS view with cards dashboard
+  return (
+    <SidebarProvider
+      style={
+        {
+          '--sidebar-width': '16rem',
+          '--header-height': '4rem',
+        } as CSSProperties
+      }
+    >
+      <AppSidebar
+        variant="floating"
+        user={user}
+        onLogout={onLogout}
+      />
+      <main className="flex-1 flex flex-col">
+        <AppHeader />
+        <SuperAdminDashboard user={user} />
+      </main>
+    </SidebarProvider>
+  )
+}
+
 export default App
+

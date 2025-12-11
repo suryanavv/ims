@@ -1,15 +1,10 @@
 import * as React from "react"
-import { IconChevronDown, IconChevronRight } from "@tabler/icons-react"
-
 import { NavUser } from "@/components/nav-user"
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -18,6 +13,7 @@ import { services } from "@/components/services-config"
 import type { LoginResponse } from "@/api/auth"
 import { dashboardAPI } from "@/api/dashboard"
 import { authAPI } from "@/api/auth"
+import { NavMain } from "@/components/nav-main"
 
 export function AppSidebar({
   user,
@@ -27,54 +23,28 @@ export function AppSidebar({
   user: LoginResponse
   onLogout?: () => void
 }) {
-   const [allowedServiceIds, setAllowedServiceIds] = React.useState<string[] | null>(null)
-   const [loadingServices, setLoadingServices] = React.useState(user.role === "clinic_admin")
-   const [serviceNameMap, setServiceNameMap] = React.useState<Map<string, string>>(new Map())
+  const [allowedServiceIds, setAllowedServiceIds] = React.useState<string[] | null>(null)
+  const [loadingServices, setLoadingServices] = React.useState(user.role === "clinic_admin")
+  const [serviceNameMap, setServiceNameMap] = React.useState<Map<string, string>>(new Map())
+  const [activeServiceId, setActiveServiceId] = React.useState<string | undefined>()
 
   React.useEffect(() => {
     let isMounted = true
 
-    // For now, only filter for clinic_admin – superadmin sees all services
     if (user.role !== "clinic_admin") {
       setAllowedServiceIds(null)
-       setLoadingServices(false)
+      setLoadingServices(false)
       return
     }
 
     const load = async () => {
       try {
-         setLoadingServices(true)
+        setLoadingServices(true)
         const data = await dashboardAPI.getUserServices()
-
-        const keys: string[] = []
-
-        if (data.integrations && Array.isArray(data.integrations)) {
-          for (const item of data.integrations) {
-            const name =
-              (typeof item.integration_name === "string"
-                ? item.integration_name
-                : typeof item.service_name === "string"
-                  ? item.service_name
-                  : "") || ""
-            if (!name) continue
-            keys.push(name.toLowerCase().replace(/\s+/g, "-"))
-          }
-        }
-
-        if (data.forms && Array.isArray(data.forms)) {
-          for (const item of data.forms) {
-            const name = typeof item.form_name === "string" ? item.form_name : ""
-            if (!name) continue
-            keys.push(name.toLowerCase().replace(/\s+/g, "-"))
-          }
-        }
-
-        if (!isMounted) return
 
         const matchedIds = new Set<string>()
         const nameMap = new Map<string, string>()
 
-        // Store original names from backend for SSO
         if (data.integrations && Array.isArray(data.integrations)) {
           for (const item of data.integrations) {
             const name =
@@ -85,8 +55,7 @@ export function AppSidebar({
                   : "") || ""
             if (!name) continue
             const key = name.toLowerCase().replace(/\s+/g, "-")
-            
-            // Map known service keys from backend to sidebar service ids
+
             if (key.includes("calendar") || key === "voice-agent") {
               matchedIds.add("clinics-dashboard")
               nameMap.set("clinics-dashboard", name)
@@ -100,8 +69,8 @@ export function AppSidebar({
               nameMap.set("ezmedtech-onboarding", name)
             }
             if (key === "ar" || key.includes("account-receivable")) {
-              matchedIds.add("ar-dashboard")
-              nameMap.set("ar-dashboard", name)
+              matchedIds.add("ar-application")
+              nameMap.set("ar-application", name)
             }
           }
         }
@@ -111,8 +80,7 @@ export function AppSidebar({
             const name = typeof item.form_name === "string" ? item.form_name : ""
             if (!name) continue
             const key = name.toLowerCase().replace(/\s+/g, "-")
-            
-            // Map known service keys from backend to sidebar service ids
+
             if (key === "i-693" || key === "i693") {
               matchedIds.add("i-693-application")
               nameMap.set("i-693-application", name)
@@ -122,22 +90,22 @@ export function AppSidebar({
               nameMap.set("ezmedtech-onboarding", name)
             }
             if (key === "ar" || key.includes("account-receivable")) {
-              matchedIds.add("ar-dashboard")
-              nameMap.set("ar-dashboard", name)
+              matchedIds.add("ar-application")
+              nameMap.set("ar-application", name)
             }
           }
         }
 
+        if (!isMounted) return
         setAllowedServiceIds(Array.from(matchedIds))
         setServiceNameMap(nameMap)
       } catch {
         if (!isMounted) return
-        // On failure, fall back to showing nothing filtered (no extra handling needed)
         setAllowedServiceIds([])
       } finally {
-         if (isMounted) {
-           setLoadingServices(false)
-         }
+        if (isMounted) {
+          setLoadingServices(false)
+        }
       }
     }
 
@@ -153,14 +121,15 @@ export function AppSidebar({
       ? services
       : services.filter((s) => allowedServiceIds.includes(s.id))
 
-  const applications = filteredServices.filter((s) => s.category === "applications")
-  const analytics = filteredServices.filter((s) => s.category === "analytics")
-
-  const [appsOpen, setAppsOpen] = React.useState(true)
-  const [analyticsOpen, setAnalyticsOpen] = React.useState(true)
+  React.useEffect(() => {
+    if (!activeServiceId && filteredServices.length > 0) {
+      setActiveServiceId(filteredServices[0].id)
+    }
+  }, [activeServiceId, filteredServices])
 
   const handleServiceClick = async (service: (typeof services)[number]) => {
-    // For superadmin, just open URL directly if available
+    setActiveServiceId(service.id)
+
     if (user.role === "superadmin") {
       if (service.url) {
         window.open(service.url, "_blank", "noopener")
@@ -168,13 +137,11 @@ export function AppSidebar({
       return
     }
 
-    // For clinic_admin, use SSO
     if (user.role === "clinic_admin") {
       const originalName = serviceNameMap.get(service.id) || service.title
       try {
         await authAPI.launchSSO(originalName)
       } catch (err) {
-        // If SSO fails, fall back to direct URL if available
         // eslint-disable-next-line no-console
         console.warn("SSO launch failed, falling back to direct URL:", err)
         if (service.url) {
@@ -184,106 +151,52 @@ export function AppSidebar({
     }
   }
 
+  const navItems = filteredServices.map((item) => ({
+    title: item.title,
+    url: "#",
+    icon: item.icon,
+    page: item.id,
+  }))
+
   return (
     <Sidebar {...props}>
-      <SidebarHeader className="pt-3 -mb-2">
-        <SidebarMenu>
+      <SidebarHeader className="pt-3 px-4 flex items-center">
+        <SidebarMenu className="w-full">
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
-              className="data-[slot=sidebar-menu-button]:!p-1.5"
+              className="data-[slot=sidebar-menu-button]:!p-3 hover:bg-transparent focus:bg-transparent active:bg-transparent"
             >
-              <a href="#">
-                <img src="/logo.svg" alt="EzMedTech Logo" className="w-6 h-6 object-contain rounded-full" />
-                <span className="text-base font-bold">EZMedTech IMS</span>
+              <a href="#" className="flex items-center gap-2">
+                <img src="/logo.svg" alt="EzMedTech Logo" className="w-6 h-6 object-contain" />
+                <div className="text-lg font-semibold flex-1 min-w-0 max-w-[12rem] truncate">EZMedTech IMS</div>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent>
-        {/* Applications Section */}
-        <SidebarGroup className="mt-1">
-          <SidebarGroupLabel
-            className="cursor-pointer select-none flex items-center justify-between px-2 py-1.5 rounded-md hover:bg-sidebar-accent"
-            onClick={() => setAppsOpen((v) => !v)}
-          >
-            <span className="text-xs font-semibold uppercase tracking-wide">
-              Applications
-            </span>
-            {appsOpen ? (
-              <IconChevronDown className="size-3 text-muted-foreground" />
-            ) : (
-              <IconChevronRight className="size-3 text-muted-foreground" />
-            )}
-          </SidebarGroupLabel>
-          <SidebarGroupContent className={appsOpen ? "mt-1" : "hidden"}>
-            {user.role === "clinic_admin" && loadingServices ? (
-              <div className="px-3 py-2 text-xs text-muted-foreground">
-                Loading your clinic services...
-              </div>
-            ) : applications.length === 0 ? (
-              <div className="px-3 py-2 text-xs text-muted-foreground">
-                No applications to display. Please contact your administrator.
-              </div>
-            ) : (
-              <SidebarMenu>
-                {applications.map((item) => (
-                  <SidebarMenuItem key={item.id}>
-                    <SidebarMenuButton 
-                      className="text-sm pl-6 cursor-pointer"
-                      onClick={() => void handleServiceClick(item)}
-                    >
-                      <span>{item.title}</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            )}
-          </SidebarGroupContent>
-        </SidebarGroup>
 
-        {/* Analytics Section */}
-        <SidebarGroup className="-mt-5">
-          <SidebarGroupLabel
-            className="cursor-pointer select-none flex items-center justify-between px-2 py-1.5 rounded-md hover:bg-sidebar-accent"
-            onClick={() => setAnalyticsOpen((v) => !v)}
-          >
-            <span className="text-xs font-semibold uppercase tracking-wide">
-              Analytics
-            </span>
-            {analyticsOpen ? (
-              <IconChevronDown className="size-3 text-muted-foreground" />
-            ) : (
-              <IconChevronRight className="size-3 text-muted-foreground" />
-            )}
-          </SidebarGroupLabel>
-          <SidebarGroupContent className={analyticsOpen ? "mt-1" : "hidden"}>
-            {user.role === "clinic_admin" && loadingServices ? (
-              <div className="px-3 py-2 text-xs text-muted-foreground">
-                Loading your clinic services...
-              </div>
-            ) : analytics.length === 0 ? (
-              <div className="px-3 py-2 text-xs text-muted-foreground">
-                No analytics dashboard to display. Please contact your administrator.
-              </div>
-            ) : (
-              <SidebarMenu>
-                {analytics.map((item) => (
-                  <SidebarMenuItem key={item.id}>
-                    <SidebarMenuButton 
-                      className="text-sm pl-6 cursor-pointer"
-                      onClick={() => void handleServiceClick(item)}
-                    >
-                      <span>{item.title}</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            )}
-          </SidebarGroupContent>
-        </SidebarGroup>
+      <SidebarContent>
+        {user.role === "clinic_admin" && loadingServices ? (
+          <div className="px-4 py-3 text-xs text-muted-foreground">
+            Loading your clinic services...
+          </div>
+        ) : navItems.length === 0 ? (
+          <div className="px-4 py-3 text-xs text-muted-foreground">
+            No services to display. Please contact your administrator.
+          </div>
+        ) : (
+          <NavMain
+            items={navItems}
+            currentPage={activeServiceId}
+            onPageChange={(page) => {
+              const service = filteredServices.find((s) => s.id === page)
+              if (service) void handleServiceClick(service)
+            }}
+          />
+        )}
       </SidebarContent>
+
       <SidebarFooter>
         <NavUser
           user={{
@@ -299,4 +212,3 @@ export function AppSidebar({
     </Sidebar>
   )
 }
-

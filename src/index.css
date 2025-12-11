@@ -1,1 +1,56 @@
 @import "tailwindcss";
+
+/* Custom sidebar menu button styling - pure black text */
+[data-sidebar="menu-button"] {
+  color: #000000 !important;
+}
+
+[data-sidebar="menu-button"] span {
+  color: #000000 !important;
+}
+
+[data-sidebar="menu-button"] svg {
+  color: #000000 !important;
+}
+
+/* Hover states - keep text black */
+[data-sidebar="menu-button"]:hover {
+  color: #000000 !important;
+}
+
+[data-sidebar="menu-button"]:hover span {
+  color: #000000 !important;
+}
+
+[data-sidebar="menu-button"]:hover svg {
+  color: #000000 !important;
+}
+
+/* Active state styling */
+[data-sidebar="menu-button"][data-active="true"] {
+  /* Background removed - using custom bar indicator from nav-main.tsx instead */
+  background-color: transparent !important;
+  color: #000000 !important;
+  border-radius: 6px !important;
+}
+
+[data-sidebar="menu-button"][data-active="true"] span {
+  color: #000000 !important;
+}
+
+[data-sidebar="menu-button"][data-active="true"] svg {
+  color: #000000 !important;
+}
+
+/* Active hover state */
+[data-sidebar="menu-button"][data-active="true"]:hover {
+  color: #000000 !important;
+}
+
+[data-sidebar="menu-button"][data-active="true"]:hover span {
+  color: #000000 !important;
+}
+
+[data-sidebar="menu-button"][data-active="true"]:hover svg {
+  color: #000000 !important;
+}

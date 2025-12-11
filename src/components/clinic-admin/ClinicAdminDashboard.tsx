@@ -38,9 +38,9 @@ const CLINIC_SERVICE_CARDS = [
     url: "https://onboarding.clinqly.ai/",
   },
   {
-    id: "ar-dashboard",
+    id: "ar-application",
     matchKeys: ["ar", "account-receivable", "accounts-receivable"],
-    title: "AR Dashboard",
+    title: "AR Application",
     description: "Track and manage accounts receivable performance.",
     url: "https://staging-ar.clinqly.ai/",
   },
@@ -188,7 +188,11 @@ export function ClinicAdminDashboard({}: ClinicAdminDashboardProps) {
                   >
                     <div className="inline-flex items-center justify-center rounded-2xl bg-secondary w-14 h-14">
                       {Icon ? (
-                        <Icon className="w-7 h-7 text-foreground" />
+                        <Icon
+                          className="w-7 h-7"
+                          strokeWidth={1.5}
+                          style={service?.color ? { color: service.color } : undefined}
+                        />
                       ) : (
                         <span className="text-xl font-semibold text-foreground">
                           {card.title.charAt(0)}

@@ -1,2217 +1,23 @@
 {
-    "openapi": "3.1.0",
-    "info": {
-      "title": "IMS Backend API",
-      "description": "Identity Management System Backend",
-      "version": "2.0.0"
-    },
-    "paths": {
-      "/": {
-        "get": {
-          "summary": "Root",
-          "description": "Root endpoint",
-          "operationId": "root__get",
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/api/auth/login": {
-        "post": {
-          "tags": [
-            "Authentication",
-            "Authentication"
-          ],
-          "summary": "Login",
-          "description": "Login endpoint for local authentication.\n\nCreates access token (sent to frontend) and refresh token (stored in HTTP-only cookie).\nWorks for all login types: local, Google, Microsoft.",
-          "operationId": "login_api_auth_login_post",
-          "requestBody": {
+  "openapi": "3.1.0",
+  "info": {
+    "title": "IMS Backend API",
+    "description": "Identity Management System Backend",
+    "version": "2.0.0"
+  },
+  "paths": {
+    "/": {
+      "get": {
+        "summary": "Root",
+        "description": "Root endpoint",
+        "operationId": "root__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LoginRequest"
-                }
-              }
-            },
-            "required": true
-          },
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/LoginResponse"
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/api/auth/refresh": {
-        "post": {
-          "tags": [
-            "Authentication",
-            "Authentication"
-          ],
-          "summary": "Refresh Token From Cookie",
-          "description": "Refresh access token using refresh token from HTTP-only cookie.\n\nThis endpoint reads the refresh_token from cookies and issues a new access token.",
-          "operationId": "refresh_token_from_cookie_api_auth_refresh_post",
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/RefreshTokenResponse"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/api/auth/me": {
-        "get": {
-          "tags": [
-            "Authentication",
-            "Authentication"
-          ],
-          "summary": "Get Current User Info",
-          "description": "Get current authenticated user information",
-          "operationId": "get_current_user_info_api_auth_me_get",
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/UserInfoResponse"
-                  }
-                }
-              }
-            }
-          },
-          "security": [
-            {
-              "HTTPBearer": []
-            }
-          ]
-        }
-      },
-      "/api/auth/logout": {
-        "post": {
-          "tags": [
-            "Authentication",
-            "Authentication"
-          ],
-          "summary": "Logout",
-          "description": "Logout endpoint.\n\nClears refresh token cookie (stateless - no database revocation needed).",
-          "operationId": "logout_api_auth_logout_post",
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
-                }
-              }
-            }
-          },
-          "security": [
-            {
-              "HTTPBearer": []
-            }
-          ]
-        }
-      },
-      "/api/auth/sso-redirect": {
-        "get": {
-          "tags": [
-            "Authentication",
-            "Authentication"
-          ],
-          "summary": "Sso Redirect",
-          "description": "Generate SSO redirect URL with token for specific services",
-          "operationId": "sso_redirect_api_auth_sso_redirect_get",
-          "security": [
-            {
-              "HTTPBearer": []
-            }
-          ],
-          "parameters": [
-            {
-              "name": "service",
-              "in": "query",
-              "required": true,
-              "schema": {
-                "type": "string",
-                "title": "Service"
-              }
-            },
-            {
-              "name": "role",
-              "in": "query",
-              "required": false,
-              "schema": {
-                "type": "string",
-                "description": "User role: admin, doctor, or staff",
-                "default": "admin",
-                "title": "Role"
-              },
-              "description": "User role: admin, doctor, or staff"
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/api/auth/decrypt-onboarding": {
-        "post": {
-          "tags": [
-            "Authentication",
-            "Authentication"
-          ],
-          "summary": "Decrypt Onboarding",
-          "description": "Decrypt the onboarding token to get user_id and email.\nUsed for clinic onboarding links.",
-          "operationId": "decrypt_onboarding_api_auth_decrypt_onboarding_post",
-          "requestBody": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DecryptOnboardingRequest"
-                }
-              }
-            },
-            "required": true
-          },
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/api/auth/google/initiate": {
-        "get": {
-          "tags": [
-            "Google OAuth",
-            "Google OAuth"
-          ],
-          "summary": "Initiate Google Auth",
-          "description": "Initiate Google OAuth flow.\nCan be used for both connection and login.",
-          "operationId": "initiate_google_auth_api_auth_google_initiate_get",
-          "parameters": [
-            {
-              "name": "email",
-              "in": "query",
-              "required": false,
-              "schema": {
-                "anyOf": [
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ],
-                "title": "Email"
-              }
-            },
-            {
-              "name": "user_id",
-              "in": "query",
-              "required": false,
-              "schema": {
-                "anyOf": [
-                  {
-                    "type": "integer"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ],
-                "title": "User Id"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/api/auth/google/callback": {
-        "get": {
-          "tags": [
-            "Google OAuth",
-            "Google OAuth"
-          ],
-          "summary": "Google Auth Callback",
-          "description": "Handle Google OAuth callback.\nCreates IMS tokens and sets refresh token cookie.",
-          "operationId": "google_auth_callback_api_auth_google_callback_get",
-          "parameters": [
-            {
-              "name": "code",
-              "in": "query",
-              "required": true,
-              "schema": {
-                "type": "string",
-                "title": "Code"
-              }
-            },
-            {
-              "name": "state",
-              "in": "query",
-              "required": true,
-              "schema": {
-                "type": "string",
-                "title": "State"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/api/auth/google/connect": {
-        "post": {
-          "tags": [
-            "Google OAuth",
-            "Google OAuth"
-          ],
-          "summary": "Connect Google Account",
-          "description": "Connect Google account to existing user.\nUsed when user clicks 'Connect with Google' from onboarding email.",
-          "operationId": "connect_google_account_api_auth_google_connect_post",
-          "parameters": [
-            {
-              "name": "user_id",
-              "in": "query",
-              "required": true,
-              "schema": {
-                "type": "integer",
-                "title": "User Id"
-              }
-            },
-            {
-              "name": "email",
-              "in": "query",
-              "required": true,
-              "schema": {
-                "type": "string",
-                "title": "Email"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/api/auth/google/disconnect": {
-        "post": {
-          "tags": [
-            "Google OAuth",
-            "Google OAuth"
-          ],
-          "summary": "Disconnect Google Account",
-          "description": "Disconnect Google account from user.\nUser can only use password authentication after this.",
-          "operationId": "disconnect_google_account_api_auth_google_disconnect_post",
-          "parameters": [
-            {
-              "name": "user_id",
-              "in": "query",
-              "required": true,
-              "schema": {
-                "type": "integer",
-                "title": "User Id"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/api/auth/google/status/{user_id}": {
-        "get": {
-          "tags": [
-            "Google OAuth",
-            "Google OAuth"
-          ],
-          "summary": "Get Google Connection Status",
-          "description": "Check if user has Google account connected",
-          "operationId": "get_google_connection_status_api_auth_google_status__user_id__get",
-          "parameters": [
-            {
-              "name": "user_id",
-              "in": "path",
-              "required": true,
-              "schema": {
-                "type": "integer",
-                "title": "User Id"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/api/auth/microsoft/initiate": {
-        "get": {
-          "tags": [
-            "Microsoft OAuth",
-            "Microsoft OAuth"
-          ],
-          "summary": "Initiate Microsoft Auth",
-          "description": "Initiate Microsoft OAuth flow.\nCan be used for both connection and login.",
-          "operationId": "initiate_microsoft_auth_api_auth_microsoft_initiate_get",
-          "parameters": [
-            {
-              "name": "email",
-              "in": "query",
-              "required": false,
-              "schema": {
-                "anyOf": [
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ],
-                "title": "Email"
-              }
-            },
-            {
-              "name": "user_id",
-              "in": "query",
-              "required": false,
-              "schema": {
-                "anyOf": [
-                  {
-                    "type": "integer"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ],
-                "title": "User Id"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/api/auth/microsoft/callback": {
-        "get": {
-          "tags": [
-            "Microsoft OAuth",
-            "Microsoft OAuth"
-          ],
-          "summary": "Microsoft Auth Callback",
-          "description": "Handle Microsoft OAuth callback.\nCreates IMS tokens and sets refresh token cookie.",
-          "operationId": "microsoft_auth_callback_api_auth_microsoft_callback_get",
-          "parameters": [
-            {
-              "name": "code",
-              "in": "query",
-              "required": true,
-              "schema": {
-                "type": "string",
-                "title": "Code"
-              }
-            },
-            {
-              "name": "state",
-              "in": "query",
-              "required": true,
-              "schema": {
-                "type": "string",
-                "title": "State"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/api/auth/microsoft/connect": {
-        "post": {
-          "tags": [
-            "Microsoft OAuth",
-            "Microsoft OAuth"
-          ],
-          "summary": "Connect Microsoft Account",
-          "description": "Connect Microsoft account to existing user.\nUsed when user clicks 'Connect with Microsoft' from onboarding email.",
-          "operationId": "connect_microsoft_account_api_auth_microsoft_connect_post",
-          "parameters": [
-            {
-              "name": "user_id",
-              "in": "query",
-              "required": true,
-              "schema": {
-                "type": "integer",
-                "title": "User Id"
-              }
-            },
-            {
-              "name": "email",
-              "in": "query",
-              "required": true,
-              "schema": {
-                "type": "string",
-                "title": "Email"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/api/auth/microsoft/disconnect": {
-        "post": {
-          "tags": [
-            "Microsoft OAuth",
-            "Microsoft OAuth"
-          ],
-          "summary": "Disconnect Microsoft Account",
-          "description": "Disconnect Microsoft account from user.\nUser can only use password authentication after this.",
-          "operationId": "disconnect_microsoft_account_api_auth_microsoft_disconnect_post",
-          "parameters": [
-            {
-              "name": "user_id",
-              "in": "query",
-              "required": true,
-              "schema": {
-                "type": "integer",
-                "title": "User Id"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/api/auth/microsoft/status/{user_id}": {
-        "get": {
-          "tags": [
-            "Microsoft OAuth",
-            "Microsoft OAuth"
-          ],
-          "summary": "Get Microsoft Connection Status",
-          "description": "Check if user has Microsoft account connected",
-          "operationId": "get_microsoft_connection_status_api_auth_microsoft_status__user_id__get",
-          "parameters": [
-            {
-              "name": "user_id",
-              "in": "path",
-              "required": true,
-              "schema": {
-                "type": "integer",
-                "title": "User Id"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/api/clinic/create-clinic": {
-        "post": {
-          "tags": [
-            "Clinic Management",
-            "Clinic Management"
-          ],
-          "summary": "Create Clinic",
-          "description": "Create a new clinic with admin user.\nRequires superadmin access.",
-          "operationId": "create_clinic_api_clinic_create_clinic_post",
-          "requestBody": {
-            "content": {
-              "multipart/form-data": {
-                "schema": {
-                  "$ref": "#/components/schemas/Body_create_clinic_api_clinic_create_clinic_post"
-                }
-              }
-            },
-            "required": true
-          },
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/ClinicCreateResponse"
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          },
-          "security": [
-            {
-              "HTTPBearer": []
-            }
-          ]
-        }
-      },
-      "/api/clinic/clinics": {
-        "get": {
-          "tags": [
-            "Clinic Management",
-            "Clinic Management"
-          ],
-          "summary": "Get All Clinics",
-          "description": "Get all clinics with their assigned integrations and forms. Requires superadmin access.",
-          "operationId": "get_all_clinics_api_clinic_clinics_get",
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/ClinicListResponse"
-                  }
-                }
-              }
-            }
-          },
-          "security": [
-            {
-              "HTTPBearer": []
-            }
-          ]
-        }
-      },
-      "/api/clinic/update-clinic/{clinic_id}": {
-        "put": {
-          "tags": [
-            "Clinic Management",
-            "Clinic Management"
-          ],
-          "summary": "Update Clinic",
-          "description": "Update clinic details and access. Requires superadmin access.",
-          "operationId": "update_clinic_api_clinic_update_clinic__clinic_id__put",
-          "security": [
-            {
-              "HTTPBearer": []
-            }
-          ],
-          "parameters": [
-            {
-              "name": "clinic_id",
-              "in": "path",
-              "required": true,
-              "schema": {
-                "type": "integer",
-                "title": "Clinic Id"
-              }
-            }
-          ],
-          "requestBody": {
-            "required": true,
-            "content": {
-              "multipart/form-data": {
-                "schema": {
-                  "$ref": "#/components/schemas/Body_update_clinic_api_clinic_update_clinic__clinic_id__put"
-                }
-              }
-            }
-          },
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/ClinicUpdateResponse"
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/api/clinic/delete-clinic/{clinic_id}": {
-        "delete": {
-          "tags": [
-            "Clinic Management",
-            "Clinic Management"
-          ],
-          "summary": "Delete Clinic",
-          "description": "Delete a clinic (CASCADE will handle related records). Requires superadmin access.",
-          "operationId": "delete_clinic_api_clinic_delete_clinic__clinic_id__delete",
-          "security": [
-            {
-              "HTTPBearer": []
-            }
-          ],
-          "parameters": [
-            {
-              "name": "clinic_id",
-              "in": "path",
-              "required": true,
-              "schema": {
-                "type": "integer",
-                "title": "Clinic Id"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/api/clinic/clinic/{clinic_id}": {
-        "get": {
-          "tags": [
-            "Clinic Management",
-            "Clinic Management"
-          ],
-          "summary": "Get Clinic Details",
-          "description": "Get detailed information about a specific clinic. Requires superadmin access.",
-          "operationId": "get_clinic_details_api_clinic_clinic__clinic_id__get",
-          "security": [
-            {
-              "HTTPBearer": []
-            }
-          ],
-          "parameters": [
-            {
-              "name": "clinic_id",
-              "in": "path",
-              "required": true,
-              "schema": {
-                "type": "integer",
-                "title": "Clinic Id"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/ClinicDetailResponse"
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/api/clinic/resend-onboarding/{user_id}": {
-        "post": {
-          "tags": [
-            "Clinic Management",
-            "Clinic Management"
-          ],
-          "summary": "Resend Onboarding Link",
-          "description": "Resend onboarding email to a user. Requires superadmin access.",
-          "operationId": "resend_onboarding_link_api_clinic_resend_onboarding__user_id__post",
-          "security": [
-            {
-              "HTTPBearer": []
-            }
-          ],
-          "parameters": [
-            {
-              "name": "user_id",
-              "in": "path",
-              "required": true,
-              "schema": {
-                "type": "integer",
-                "title": "User Id"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/api/dashboard/stats": {
-        "get": {
-          "tags": [
-            "Dashboard",
-            "Dashboard"
-          ],
-          "summary": "Get Dashboard Stats",
-          "description": "Get detailed dashboard statistics",
-          "operationId": "get_dashboard_stats_api_dashboard_stats_get",
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
-                }
-              }
-            }
-          },
-          "security": [
-            {
-              "HTTPBearer": []
-            }
-          ]
-        }
-      },
-      "/api/dashboard/user-services": {
-        "get": {
-          "tags": [
-            "Dashboard",
-            "Dashboard"
-          ],
-          "summary": "Get User Services",
-          "description": "Get integrations and forms accessible to the current user",
-          "operationId": "get_user_services_api_dashboard_user_services_get",
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
-                }
-              }
-            }
-          },
-          "security": [
-            {
-              "HTTPBearer": []
-            }
-          ]
-        }
-      },
-      "/api/dashboard/analytics": {
-        "get": {
-          "tags": [
-            "Dashboard",
-            "Dashboard"
-          ],
-          "summary": "Get Analytics",
-          "description": "Get analytics data for superadmin",
-          "operationId": "get_analytics_api_dashboard_analytics_get",
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
-                }
-              }
-            }
-          },
-          "security": [
-            {
-              "HTTPBearer": []
-            }
-          ]
-        }
-      },
-      "/api/dashboard/clinic-services/{clinic_id}": {
-        "get": {
-          "tags": [
-            "Dashboard",
-            "Dashboard"
-          ],
-          "summary": "Get Clinic Services",
-          "description": "Get all integrations and forms for a specific clinic",
-          "operationId": "get_clinic_services_api_dashboard_clinic_services__clinic_id__get",
-          "security": [
-            {
-              "HTTPBearer": []
-            }
-          ],
-          "parameters": [
-            {
-              "name": "clinic_id",
-              "in": "path",
-              "required": true,
-              "schema": {
-                "type": "integer",
-                "title": "Clinic Id"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/api/dashboard/external/google-calendar-clinics": {
-        "get": {
-          "tags": [
-            "Dashboard",
-            "Dashboard"
-          ],
-          "summary": "Get Google Calendar Clinics",
-          "description": "Proxy endpoint to fetch list of clinics with Google Calendar stats from external backend.\nReturns clinics list with pagination support.",
-          "operationId": "get_google_calendar_clinics_api_dashboard_external_google_calendar_clinics_get",
-          "security": [
-            {
-              "HTTPBearer": []
-            }
-          ],
-          "parameters": [
-            {
-              "name": "page",
-              "in": "query",
-              "required": false,
-              "schema": {
-                "type": "integer",
-                "minimum": 1,
-                "default": 1,
-                "title": "Page"
-              }
-            },
-            {
-              "name": "per_page",
-              "in": "query",
-              "required": false,
-              "schema": {
-                "type": "integer",
-                "maximum": 100,
-                "minimum": 1,
-                "default": 10,
-                "title": "Per Page"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/api/dashboard/external/google-calendar-logs/{phone_number}": {
-        "get": {
-          "tags": [
-            "Dashboard",
-            "Dashboard"
-          ],
-          "summary": "Get Google Calendar Clinic Logs",
-          "description": "Proxy endpoint to fetch Google Calendar logs for a specific clinic by phone number.\nReturns logs with pagination support.",
-          "operationId": "get_google_calendar_clinic_logs_api_dashboard_external_google_calendar_logs__phone_number__get",
-          "security": [
-            {
-              "HTTPBearer": []
-            }
-          ],
-          "parameters": [
-            {
-              "name": "phone_number",
-              "in": "path",
-              "required": true,
-              "schema": {
-                "type": "string",
-                "title": "Phone Number"
-              }
-            },
-            {
-              "name": "page",
-              "in": "query",
-              "required": false,
-              "schema": {
-                "type": "integer",
-                "minimum": 1,
-                "default": 1,
-                "title": "Page"
-              }
-            },
-            {
-              "name": "per_page",
-              "in": "query",
-              "required": false,
-              "schema": {
-                "type": "integer",
-                "maximum": 100,
-                "minimum": 1,
-                "default": 10,
-                "title": "Per Page"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/api/dashboard/external/google-calendar-transcript/{phone_number}/{call_id}": {
-        "get": {
-          "tags": [
-            "Dashboard",
-            "Dashboard"
-          ],
-          "summary": "Get Google Calendar Transcript",
-          "description": "Proxy endpoint to fetch transcript for a specific call.\nReturns transcript data.",
-          "operationId": "get_google_calendar_transcript_api_dashboard_external_google_calendar_transcript__phone_number___call_id__get",
-          "security": [
-            {
-              "HTTPBearer": []
-            }
-          ],
-          "parameters": [
-            {
-              "name": "phone_number",
-              "in": "path",
-              "required": true,
-              "schema": {
-                "type": "string",
-                "title": "Phone Number"
-              }
-            },
-            {
-              "name": "call_id",
-              "in": "path",
-              "required": true,
-              "schema": {
-                "type": "string",
-                "title": "Call Id"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/api/admin/users": {
-        "get": {
-          "tags": [
-            "Admin",
-            "Admin"
-          ],
-          "summary": "Get Users",
-          "description": "Get users - superadmin sees all, clinic_admin sees only their clinic",
-          "operationId": "get_users_api_admin_users_get",
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
-                }
-              }
-            }
-          },
-          "security": [
-            {
-              "HTTPBearer": []
-            }
-          ]
-        }
-      },
-      "/api/admin/users/{user_id}": {
-        "get": {
-          "tags": [
-            "Admin",
-            "Admin"
-          ],
-          "summary": "Get User By Id",
-          "description": "Get specific user by ID",
-          "operationId": "get_user_by_id_api_admin_users__user_id__get",
-          "security": [
-            {
-              "HTTPBearer": []
-            }
-          ],
-          "parameters": [
-            {
-              "name": "user_id",
-              "in": "path",
-              "required": true,
-              "schema": {
-                "type": "integer",
-                "title": "User Id"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "put": {
-          "tags": [
-            "Admin",
-            "Admin"
-          ],
-          "summary": "Update User",
-          "description": "Update user information",
-          "operationId": "update_user_api_admin_users__user_id__put",
-          "security": [
-            {
-              "HTTPBearer": []
-            }
-          ],
-          "parameters": [
-            {
-              "name": "user_id",
-              "in": "path",
-              "required": true,
-              "schema": {
-                "type": "integer",
-                "title": "User Id"
-              }
-            }
-          ],
-          "requestBody": {
-            "required": true,
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserUpdate"
-                }
-              }
-            }
-          },
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "delete": {
-          "tags": [
-            "Admin",
-            "Admin"
-          ],
-          "summary": "Delete User",
-          "description": "Deactivate (soft delete) a user - only superadmin",
-          "operationId": "delete_user_api_admin_users__user_id__delete",
-          "security": [
-            {
-              "HTTPBearer": []
-            }
-          ],
-          "parameters": [
-            {
-              "name": "user_id",
-              "in": "path",
-              "required": true,
-              "schema": {
-                "type": "integer",
-                "title": "User Id"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/api/admin/profile": {
-        "get": {
-          "tags": [
-            "Admin",
-            "Admin"
-          ],
-          "summary": "Get Admin Profile",
-          "description": "Get current admin profile",
-          "operationId": "get_admin_profile_api_admin_profile_get",
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
-                }
-              }
-            }
-          },
-          "security": [
-            {
-              "HTTPBearer": []
-            }
-          ]
-        }
-      },
-      "/api/password/forgot-password": {
-        "post": {
-          "tags": [
-            "Password Management",
-            "Password Management"
-          ],
-          "summary": "Forgot Password",
-          "description": "Request password reset - sends email with reset link.\nNo authentication required.",
-          "operationId": "forgot_password_api_password_forgot_password_post",
-          "requestBody": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ForgotPasswordRequest"
-                }
-              }
-            },
-            "required": true
-          },
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/api/password/reset-with-user/{encrypted_user_id}": {
-        "post": {
-          "tags": [
-            "Password Management",
-            "Password Management"
-          ],
-          "summary": "Reset Password With User",
-          "description": "Reset password using encrypted user ID - HIPAA compliant (no token storage)",
-          "operationId": "reset_password_with_user_api_password_reset_with_user__encrypted_user_id__post",
-          "parameters": [
-            {
-              "name": "encrypted_user_id",
-              "in": "path",
-              "required": true,
-              "schema": {
-                "type": "string",
-                "title": "Encrypted User Id"
-              }
-            }
-          ],
-          "requestBody": {
-            "required": true,
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PasswordResetWithUser"
-                }
-              }
-            }
-          },
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/api/password/verify-user/{encrypted_user_id}": {
-        "get": {
-          "tags": [
-            "Password Management",
-            "Password Management"
-          ],
-          "summary": "Verify User For Reset",
-          "description": "Verify encrypted user ID and return user info",
-          "operationId": "verify_user_for_reset_api_password_verify_user__encrypted_user_id__get",
-          "parameters": [
-            {
-              "name": "encrypted_user_id",
-              "in": "path",
-              "required": true,
-              "schema": {
-                "type": "string",
-                "title": "Encrypted User Id"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/api/password/generate-setup-token/{user_id}": {
-        "post": {
-          "tags": [
-            "Password Management",
-            "Password Management"
-          ],
-          "summary": "Generate Password Setup Token",
-          "description": "Generate encrypted token for onboarding password setup.\nUsed when new users need to set their initial password.",
-          "operationId": "generate_password_setup_token_api_password_generate_setup_token__user_id__post",
-          "parameters": [
-            {
-              "name": "user_id",
-              "in": "path",
-              "required": true,
-              "schema": {
-                "type": "integer",
-                "title": "User Id"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/api/twilio/": {
-        "get": {
-          "tags": [
-            "Twilio Numbers",
-            "Twilio Numbers"
-          ],
-          "summary": "Get Twilio Numbers",
-          "description": "Get all Twilio numbers with optional filtering",
-          "operationId": "get_twilio_numbers_api_twilio__get",
-          "security": [
-            {
-              "HTTPBearer": []
-            }
-          ],
-          "parameters": [
-            {
-              "name": "assigned_only",
-              "in": "query",
-              "required": false,
-              "schema": {
-                "type": "boolean",
-                "default": false,
-                "title": "Assigned Only"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/TwilioNumberResponse"
-                    },
-                    "title": "Response Get Twilio Numbers Api Twilio  Get"
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "post": {
-          "tags": [
-            "Twilio Numbers",
-            "Twilio Numbers"
-          ],
-          "summary": "Create Twilio Number",
-          "description": "Create a new Twilio number",
-          "operationId": "create_twilio_number_api_twilio__post",
-          "security": [
-            {
-              "HTTPBearer": []
-            }
-          ],
-          "requestBody": {
-            "required": true,
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TwilioNumberCreate"
-                }
-              }
-            }
-          },
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/TwilioNumberResponse"
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/api/twilio/available": {
-        "get": {
-          "tags": [
-            "Twilio Numbers",
-            "Twilio Numbers"
-          ],
-          "summary": "Get Available Twilio Numbers",
-          "description": "Get available (unassigned) Twilio numbers for clinic onboarding",
-          "operationId": "get_available_twilio_numbers_api_twilio_available_get",
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "items": {
-                      "$ref": "#/components/schemas/TwilioNumberResponse"
-                    },
-                    "type": "array",
-                    "title": "Response Get Available Twilio Numbers Api Twilio Available Get"
-                  }
-                }
-              }
-            }
-          },
-          "security": [
-            {
-              "HTTPBearer": []
-            }
-          ]
-        }
-      },
-      "/api/twilio/{twilio_id}": {
-        "put": {
-          "tags": [
-            "Twilio Numbers",
-            "Twilio Numbers"
-          ],
-          "summary": "Update Twilio Number",
-          "description": "Update a Twilio number",
-          "operationId": "update_twilio_number_api_twilio__twilio_id__put",
-          "security": [
-            {
-              "HTTPBearer": []
-            }
-          ],
-          "parameters": [
-            {
-              "name": "twilio_id",
-              "in": "path",
-              "required": true,
-              "schema": {
-                "type": "integer",
-                "title": "Twilio Id"
-              }
-            }
-          ],
-          "requestBody": {
-            "required": true,
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TwilioNumberUpdate"
-                }
-              }
-            }
-          },
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/TwilioNumberResponse"
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "delete": {
-          "tags": [
-            "Twilio Numbers",
-            "Twilio Numbers"
-          ],
-          "summary": "Delete Twilio Number",
-          "description": "Soft delete a Twilio number",
-          "operationId": "delete_twilio_number_api_twilio__twilio_id__delete",
-          "security": [
-            {
-              "HTTPBearer": []
-            }
-          ],
-          "parameters": [
-            {
-              "name": "twilio_id",
-              "in": "path",
-              "required": true,
-              "schema": {
-                "type": "integer",
-                "title": "Twilio Id"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/api/login-tracking/track-login": {
-        "post": {
-          "tags": [
-            "Login Tracking",
-            "Login Tracking"
-          ],
-          "summary": "Track Login",
-          "description": "Track admin login event",
-          "operationId": "track_login_api_login_tracking_track_login_post",
-          "requestBody": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LoginTrackingRequest"
-                }
-              }
-            },
-            "required": true
-          },
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/LoginTrackingResponse"
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          },
-          "security": [
-            {
-              "HTTPBearer": []
-            }
-          ]
-        }
-      },
-      "/api/login-tracking/logout-session/{session_id}": {
-        "post": {
-          "tags": [
-            "Login Tracking",
-            "Login Tracking"
-          ],
-          "summary": "Logout Session",
-          "description": "Logout a specific session",
-          "operationId": "logout_session_api_login_tracking_logout_session__session_id__post",
-          "security": [
-            {
-              "HTTPBearer": []
-            }
-          ],
-          "parameters": [
-            {
-              "name": "session_id",
-              "in": "path",
-              "required": true,
-              "schema": {
-                "type": "string",
-                "title": "Session Id"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/api/time/total-time": {
-        "post": {
-          "tags": [
-            "Time Tracking",
-            "Time Tracking"
-          ],
-          "summary": "Create Or Update Total Time",
-          "description": "Create or update total time for an agent.\nIf agent_id exists, add to existing duration.\nNo authentication required - called by other services.",
-          "operationId": "create_or_update_total_time_api_time_total_time_post",
-          "requestBody": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TotalTimeCreate"
-                }
-              }
-            },
-            "required": true
-          },
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/api/time/sse/duration": {
-        "get": {
-          "tags": [
-            "Time Tracking",
-            "Time Tracking"
-          ],
-          "summary": "Sse Duration Stream",
-          "description": "Server-Sent Events endpoint for real-time duration updates.\nClients connect once and receive live updates when call durations change.",
-          "operationId": "sse_duration_stream_api_time_sse_duration_get",
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/api/chatagent/end_voice_session/{session_key}": {
-        "post": {
-          "tags": [
-            "Ezmedtech website"
-          ],
-          "summary": "End Voice Session",
-          "operationId": "end_voice_session_api_chatagent_end_voice_session__session_key__post",
-          "parameters": [
-            {
-              "name": "session_key",
-              "in": "path",
-              "required": true,
-              "schema": {
-                "type": "string",
-                "title": "Session Key"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-  
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
+
                 }
               }
             }
@@ -2219,670 +25,263 @@
         }
       }
     },
-    "components": {
-      "schemas": {
-        "Body_create_clinic_api_clinic_create_clinic_post": {
-          "properties": {
-            "full_name": {
-              "type": "string",
-              "title": "Full Name"
-            },
-            "email": {
-              "type": "string",
-              "title": "Email"
-            },
-            "clinic_name": {
-              "type": "string",
-              "title": "Clinic Name"
-            },
-            "file": {
-              "type": "string",
-              "format": "binary",
-              "title": "File"
-            },
-            "address_street": {
-              "type": "string",
-              "title": "Address Street",
-              "default": ""
-            },
-            "address_city": {
-              "type": "string",
-              "title": "Address City",
-              "default": ""
-            },
-            "address_state": {
-              "type": "string",
-              "title": "Address State",
-              "default": ""
-            },
-            "address_zip": {
-              "type": "string",
-              "title": "Address Zip",
-              "default": ""
-            },
-            "phone": {
-              "type": "string",
-              "title": "Phone"
-            },
-            "mobile_number": {
-              "type": "string",
-              "title": "Mobile Number"
-            },
-            "integration_access": {
-              "type": "string",
-              "title": "Integration Access",
-              "default": ""
-            },
-            "form_access": {
-              "type": "string",
-              "title": "Form Access",
-              "default": ""
-            },
-            "service_id": {
-              "type": "integer",
-              "title": "Service Id",
-              "default": 1
-            },
-            "fax": {
-              "type": "string",
-              "title": "Fax",
-              "default": ""
-            },
-            "website_url": {
-              "type": "string",
-              "title": "Website Url",
-              "default": ""
-            },
-            "csid": {
-              "type": "string",
-              "title": "Csid",
-              "default": ""
-            },
-            "twilio_numbers": {
-              "type": "string",
-              "title": "Twilio Numbers",
-              "default": "{}"
-            },
-            "developer_api_keys": {
-              "type": "string",
-              "title": "Developer Api Keys",
-              "default": "{}"
-            },
-            "clinic_schedule": {
-              "type": "string",
-              "title": "Clinic Schedule",
-              "default": "{}"
+    "/api/auth/login": {
+      "post": {
+        "tags": [
+          "Authentication",
+          "Authentication"
+        ],
+        "summary": "Login",
+        "description": "Login endpoint for local authentication.\n\nCreates access token (sent to frontend) and refresh token (stored in HTTP-only cookie).\nWorks for all login types: local, Google, Microsoft.",
+        "operationId": "login_api_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
             }
           },
-          "type": "object",
-          "required": [
-            "full_name",
-            "email",
-            "clinic_name",
-            "phone",
-            "mobile_number"
-          ],
-          "title": "Body_create_clinic_api_clinic_create_clinic_post"
+          "required": true
         },
-        "Body_update_clinic_api_clinic_update_clinic__clinic_id__put": {
-          "properties": {
-            "clinic_name": {
-              "type": "string",
-              "title": "Clinic Name"
-            },
-            "email": {
-              "type": "string",
-              "title": "Email"
-            },
-            "phone": {
-              "type": "string",
-              "title": "Phone",
-              "default": ""
-            },
-            "address_street": {
-              "type": "string",
-              "title": "Address Street",
-              "default": ""
-            },
-            "address_city": {
-              "type": "string",
-              "title": "Address City",
-              "default": ""
-            },
-            "address_state": {
-              "type": "string",
-              "title": "Address State",
-              "default": ""
-            },
-            "address_zip": {
-              "type": "string",
-              "title": "Address Zip",
-              "default": ""
-            },
-            "integration_access": {
-              "type": "string",
-              "title": "Integration Access",
-              "default": ""
-            },
-            "form_access": {
-              "type": "string",
-              "title": "Form Access",
-              "default": ""
-            },
-            "service_id": {
-              "type": "integer",
-              "title": "Service Id",
-              "default": 1
-            },
-            "fax": {
-              "type": "string",
-              "title": "Fax",
-              "default": ""
-            },
-            "website_url": {
-              "type": "string",
-              "title": "Website Url",
-              "default": ""
-            },
-            "csid": {
-              "type": "string",
-              "title": "Csid",
-              "default": ""
-            },
-            "twilio_numbers": {
-              "type": "string",
-              "title": "Twilio Numbers",
-              "default": "{}"
-            },
-            "developer_api_keys": {
-              "type": "string",
-              "title": "Developer Api Keys",
-              "default": "{}"
-            },
-            "clinic_schedule": {
-              "type": "string",
-              "title": "Clinic Schedule",
-              "default": "{}"
-            },
-            "file": {
-              "type": "string",
-              "format": "binary",
-              "title": "File"
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
             }
           },
-          "type": "object",
-          "required": [
-            "clinic_name",
-            "email"
-          ],
-          "title": "Body_update_clinic_api_clinic_update_clinic__clinic_id__put"
-        },
-        "ClinicCreateResponse": {
-          "properties": {
-            "message": {
-              "type": "string",
-              "title": "Message"
-            },
-            "clinic_id": {
-              "type": "integer",
-              "title": "Clinic Id"
-            },
-            "user_id": {
-              "type": "integer",
-              "title": "User Id"
-            },
-            "integrations_assigned": {
-              "type": "integer",
-              "title": "Integrations Assigned"
-            },
-            "forms_assigned": {
-              "type": "integer",
-              "title": "Forms Assigned"
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
             }
-          },
-          "type": "object",
-          "required": [
-            "message",
-            "clinic_id",
-            "user_id",
-            "integrations_assigned",
-            "forms_assigned"
-          ],
-          "title": "ClinicCreateResponse",
-          "description": "Response schema for clinic creation"
-        },
-        "ClinicDetailResponse": {
-          "properties": {
-            "clinic": {
-              "additionalProperties": true,
-              "type": "object",
-              "title": "Clinic"
-            },
-            "users": {
-              "items": {
-                "additionalProperties": true,
-                "type": "object"
-              },
-              "type": "array",
-              "title": "Users"
-            },
-            "integrations": {
-              "items": {
-                "additionalProperties": true,
-                "type": "object"
-              },
-              "type": "array",
-              "title": "Integrations"
-            },
-            "forms": {
-              "items": {
-                "additionalProperties": true,
-                "type": "object"
-              },
-              "type": "array",
-              "title": "Forms"
-            },
-            "twilio_numbers": {
-              "items": {
-                "additionalProperties": true,
-                "type": "object"
-              },
-              "type": "array",
-              "title": "Twilio Numbers"
+          }
+        }
+      }
+    },
+    "/api/auth/refresh": {
+      "post": {
+        "tags": [
+          "Authentication",
+          "Authentication"
+        ],
+        "summary": "Refresh Token From Cookie",
+        "description": "Refresh access token using refresh token from HTTP-only cookie.\n\nThis endpoint reads the refresh_token from cookies and issues a new access token.",
+        "operationId": "refresh_token_from_cookie_api_auth_refresh_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefreshTokenResponse"
+                }
+              }
             }
-          },
-          "type": "object",
-          "required": [
-            "clinic",
-            "users",
-            "integrations",
-            "forms",
-            "twilio_numbers"
-          ],
-          "title": "ClinicDetailResponse",
-          "description": "Response schema for clinic details"
-        },
-        "ClinicListResponse": {
-          "properties": {
-            "clinics": {
-              "items": {
-                "$ref": "#/components/schemas/ClinicResponse"
-              },
-              "type": "array",
-              "title": "Clinics"
-            },
-            "total": {
-              "type": "integer",
-              "title": "Total"
+          }
+        }
+      }
+    },
+    "/api/auth/me": {
+      "get": {
+        "tags": [
+          "Authentication",
+          "Authentication"
+        ],
+        "summary": "Get Current User Info",
+        "description": "Get current authenticated user information",
+        "operationId": "get_current_user_info_api_auth_me_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInfoResponse"
+                }
+              }
             }
-          },
-          "type": "object",
-          "required": [
-            "clinics",
-            "total"
-          ],
-          "title": "ClinicListResponse",
-          "description": "Response schema for clinic list"
-        },
-        "ClinicResponse": {
-          "properties": {
-            "clinic_id": {
-              "type": "integer",
-              "title": "Clinic Id"
-            },
-            "clinic_name": {
-              "type": "string",
-              "title": "Clinic Name"
-            },
-            "email": {
-              "type": "string",
-              "title": "Email"
-            },
-            "phone": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Phone"
-            },
-            "address": {
-              "anyOf": [
-                {
-                  "additionalProperties": true,
-                  "type": "object"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Address"
-            },
-            "created_at": {
-              "type": "string",
-              "format": "date-time",
-              "title": "Created At"
-            },
-            "service_id": {
-              "anyOf": [
-                {
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Service Id"
-            },
-            "fax": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Fax"
-            },
-            "website_url": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Website Url"
-            },
-            "csid": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Csid"
-            },
-            "logo_url": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Logo Url"
-            },
-            "admin_name": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Admin Name"
-            },
-            "admin_mobile": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Admin Mobile"
-            },
-            "admin_user_id": {
-              "anyOf": [
-                {
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Admin User Id"
-            },
-            "clinic_schedule": {
-              "anyOf": [
-                {
-                  "additionalProperties": true,
-                  "type": "object"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Clinic Schedule"
-            },
-            "integrations": {
-              "items": {
-                "$ref": "#/components/schemas/IntegrationInfo"
-              },
-              "type": "array",
-              "title": "Integrations",
-              "default": []
-            },
-            "forms": {
-              "items": {
-                "$ref": "#/components/schemas/FormInfo"
-              },
-              "type": "array",
-              "title": "Forms",
-              "default": []
-            }
-          },
-          "type": "object",
-          "required": [
-            "clinic_id",
-            "clinic_name",
-            "email",
-            "created_at"
-          ],
-          "title": "ClinicResponse",
-          "description": "Response schema for clinic"
-        },
-        "ClinicUpdateResponse": {
-          "properties": {
-            "message": {
-              "type": "string",
-              "title": "Message"
-            },
-            "clinic_id": {
-              "type": "integer",
-              "title": "Clinic Id"
-            },
-            "integrations_assigned": {
-              "type": "integer",
-              "title": "Integrations Assigned"
-            },
-            "forms_assigned": {
-              "type": "integer",
-              "title": "Forms Assigned"
-            }
-          },
-          "type": "object",
-          "required": [
-            "message",
-            "clinic_id",
-            "integrations_assigned",
-            "forms_assigned"
-          ],
-          "title": "ClinicUpdateResponse",
-          "description": "Response schema for clinic update"
-        },
-        "DecryptOnboardingRequest": {
-          "properties": {
-            "token": {
-              "type": "string",
-              "title": "Token"
-            }
-          },
-          "type": "object",
-          "required": [
-            "token"
-          ],
-          "title": "DecryptOnboardingRequest"
-        },
-        "ForgotPasswordRequest": {
-          "properties": {
-            "email": {
-              "type": "string",
-              "format": "email",
-              "title": "Email"
-            }
-          },
-          "type": "object",
-          "required": [
-            "email"
-          ],
-          "title": "ForgotPasswordRequest"
-        },
-        "FormInfo": {
-          "properties": {
-            "form_id": {
-              "type": "integer",
-              "title": "Form Id"
-            },
-            "form_name": {
-              "type": "string",
-              "title": "Form Name"
-            }
-          },
-          "type": "object",
-          "required": [
-            "form_id",
-            "form_name"
-          ],
-          "title": "FormInfo",
-          "description": "Form information"
-        },
-        "HTTPValidationError": {
-          "properties": {
-            "detail": {
-              "items": {
-                "$ref": "#/components/schemas/ValidationError"
-              },
-              "type": "array",
-              "title": "Detail"
-            }
-          },
-          "type": "object",
-          "title": "HTTPValidationError"
-        },
-        "IntegrationInfo": {
-          "properties": {
-            "integration_id": {
-              "type": "integer",
-              "title": "Integration Id"
-            },
-            "integration_name": {
-              "type": "string",
-              "title": "Integration Name"
-            },
-            "service_name": {
-              "type": "string",
-              "title": "Service Name"
-            },
-            "twilio_phone_number": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Twilio Phone Number"
-            },
-            "developer_api_key": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Developer Api Key"
-            }
-          },
-          "type": "object",
-          "required": [
-            "integration_id",
-            "integration_name",
-            "service_name"
-          ],
-          "title": "IntegrationInfo",
-          "description": "Integration information"
-        },
-        "LoginRequest": {
-          "properties": {
-            "email": {
-              "type": "string",
-              "format": "email",
-              "title": "Email"
-            },
-            "password": {
-              "type": "string",
-              "title": "Password"
-            }
-          },
-          "type": "object",
-          "required": [
-            "email",
-            "password"
-          ],
-          "title": "LoginRequest",
-          "description": "Login request schema",
-          "example": {
-            "email": "user@example.com",
-            "password": "securepassword123"
           }
         },
-        "LoginResponse": {
-          "properties": {
-            "access_token": {
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "tags": [
+          "Authentication",
+          "Authentication"
+        ],
+        "summary": "Logout",
+        "description": "Logout endpoint.\n\nClears refresh token cookie (stateless - no database revocation needed).",
+        "operationId": "logout_api_auth_logout_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/auth/sso-redirect": {
+      "get": {
+        "tags": [
+          "Authentication",
+          "Authentication"
+        ],
+        "summary": "Sso Redirect",
+        "description": "Generate SSO redirect URL with token for specific services",
+        "operationId": "sso_redirect_api_auth_sso_redirect_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "service",
+            "in": "query",
+            "required": true,
+            "schema": {
               "type": "string",
-              "title": "Access Token"
-            },
-            "token_type": {
+              "title": "Service"
+            }
+          },
+          {
+            "name": "role",
+            "in": "query",
+            "required": false,
+            "schema": {
               "type": "string",
-              "title": "Token Type",
-              "default": "bearer"
-            },
-            "user_id": {
-              "type": "integer",
-              "title": "User Id"
-            },
-            "email": {
-              "type": "string",
-              "title": "Email"
-            },
-            "role": {
-              "type": "string",
+              "description": "User role: admin, doctor, or staff",
+              "default": "admin",
               "title": "Role"
             },
-            "first_name": {
-              "type": "string",
-              "title": "First Name"
-            },
-            "last_name": {
-              "type": "string",
-              "title": "Last Name"
-            },
-            "clinic_id": {
+            "description": "User role: admin, doctor, or staff"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/decrypt-onboarding": {
+      "post": {
+        "tags": [
+          "Authentication",
+          "Authentication"
+        ],
+        "summary": "Decrypt Onboarding",
+        "description": "Decrypt the onboarding token to get user_id and email.\nUsed for clinic onboarding links.",
+        "operationId": "decrypt_onboarding_api_auth_decrypt_onboarding_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DecryptOnboardingRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/google/initiate": {
+      "get": {
+        "tags": [
+          "Google OAuth",
+          "Google OAuth"
+        ],
+        "summary": "Initiate Google Auth",
+        "description": "Initiate Google OAuth flow.\nCan be used for both connection and login.",
+        "operationId": "initiate_google_auth_api_auth_google_initiate_get",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Email"
+            }
+          },
+          {
+            "name": "user_id",
+            "in": "query",
+            "required": false,
+            "schema": {
               "anyOf": [
                 {
                   "type": "integer"
@@ -2891,90 +290,259 @@
                   "type": "null"
                 }
               ],
-              "title": "Clinic Id"
-            },
-            "clinic_name": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Clinic Name"
+              "title": "User Id"
             }
-          },
-          "type": "object",
-          "required": [
-            "access_token",
-            "user_id",
-            "email",
-            "role",
-            "first_name",
-            "last_name"
-          ],
-          "title": "LoginResponse",
-          "description": "Login response schema - access token sent to frontend",
-          "example": {
-            "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-            "clinic_id": 123,
-            "clinic_name": "Example Clinic",
-            "email": "user@example.com",
-            "first_name": "John",
-            "last_name": "Doe",
-            "role": "clinic_admin",
-            "token_type": "bearer",
-            "user_id": 1
           }
-        },
-        "LoginTrackingRequest": {
-          "properties": {
-            "event_type": {
-              "type": "string",
-              "title": "Event Type"
-            },
-            "session_id": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
                 }
-              ],
-              "title": "Session Id"
-            },
-            "location_data": {
-              "anyOf": [
-                {
-                  "additionalProperties": true,
-                  "type": "object"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Location Data"
+              }
             }
           },
-          "type": "object",
-          "required": [
-            "event_type"
-          ],
-          "title": "LoginTrackingRequest"
-        },
-        "LoginTrackingResponse": {
-          "properties": {
-            "tracking_id": {
-              "type": "integer",
-              "title": "Tracking Id"
-            },
-            "user_id": {
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/google/callback": {
+      "get": {
+        "tags": [
+          "Google OAuth",
+          "Google OAuth"
+        ],
+        "summary": "Google Auth Callback",
+        "description": "Handle Google OAuth callback.\nCreates IMS tokens and sets refresh token cookie.",
+        "operationId": "google_auth_callback_api_auth_google_callback_get",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Code"
+            }
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "State"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/google/connect": {
+      "post": {
+        "tags": [
+          "Google OAuth",
+          "Google OAuth"
+        ],
+        "summary": "Connect Google Account",
+        "description": "Connect Google account to existing user.\nUsed when user clicks 'Connect with Google' from onboarding email.",
+        "operationId": "connect_google_account_api_auth_google_connect_post",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "query",
+            "required": true,
+            "schema": {
               "type": "integer",
               "title": "User Id"
-            },
-            "clinic_id": {
+            }
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Email"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/google/disconnect": {
+      "post": {
+        "tags": [
+          "Google OAuth",
+          "Google OAuth"
+        ],
+        "summary": "Disconnect Google Account",
+        "description": "Disconnect Google account from user.\nUser can only use password authentication after this.",
+        "operationId": "disconnect_google_account_api_auth_google_disconnect_post",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "User Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/google/status/{user_id}": {
+      "get": {
+        "tags": [
+          "Google OAuth",
+          "Google OAuth"
+        ],
+        "summary": "Get Google Connection Status",
+        "description": "Check if user has Google account connected",
+        "operationId": "get_google_connection_status_api_auth_google_status__user_id__get",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "User Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/microsoft/initiate": {
+      "get": {
+        "tags": [
+          "Microsoft OAuth",
+          "Microsoft OAuth"
+        ],
+        "summary": "Initiate Microsoft Auth",
+        "description": "Initiate Microsoft OAuth flow.\nCan be used for both connection and login.",
+        "operationId": "initiate_microsoft_auth_api_auth_microsoft_initiate_get",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Email"
+            }
+          },
+          {
+            "name": "user_id",
+            "in": "query",
+            "required": false,
+            "schema": {
               "anyOf": [
                 {
                   "type": "integer"
@@ -2983,416 +551,2890 @@
                   "type": "null"
                 }
               ],
-              "title": "Clinic Id"
-            },
-            "event_type": {
-              "type": "string",
-              "title": "Event Type"
-            },
-            "event_timestamp": {
-              "type": "string",
-              "format": "date-time",
-              "title": "Event Timestamp"
-            },
-            "session_id": {
-              "type": "string",
-              "title": "Session Id"
-            },
-            "location_data": {
-              "anyOf": [
-                {
-                  "additionalProperties": true,
-                  "type": "object"
-                },
-                {
-                  "type": "null"
+              "title": "User Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
                 }
-              ],
-              "title": "Location Data"
+              }
             }
           },
-          "type": "object",
-          "required": [
-            "tracking_id",
-            "user_id",
-            "clinic_id",
-            "event_type",
-            "event_timestamp",
-            "session_id",
-            "location_data"
-          ],
-          "title": "LoginTrackingResponse"
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/microsoft/callback": {
+      "get": {
+        "tags": [
+          "Microsoft OAuth",
+          "Microsoft OAuth"
+        ],
+        "summary": "Microsoft Auth Callback",
+        "description": "Handle Microsoft OAuth callback.\nCreates IMS tokens and sets refresh token cookie.",
+        "operationId": "microsoft_auth_callback_api_auth_microsoft_callback_get",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Code"
+            }
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "State"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/microsoft/connect": {
+      "post": {
+        "tags": [
+          "Microsoft OAuth",
+          "Microsoft OAuth"
+        ],
+        "summary": "Connect Microsoft Account",
+        "description": "Connect Microsoft account to existing user.\nUsed when user clicks 'Connect with Microsoft' from onboarding email.",
+        "operationId": "connect_microsoft_account_api_auth_microsoft_connect_post",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "User Id"
+            }
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Email"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/microsoft/disconnect": {
+      "post": {
+        "tags": [
+          "Microsoft OAuth",
+          "Microsoft OAuth"
+        ],
+        "summary": "Disconnect Microsoft Account",
+        "description": "Disconnect Microsoft account from user.\nUser can only use password authentication after this.",
+        "operationId": "disconnect_microsoft_account_api_auth_microsoft_disconnect_post",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "User Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/microsoft/status/{user_id}": {
+      "get": {
+        "tags": [
+          "Microsoft OAuth",
+          "Microsoft OAuth"
+        ],
+        "summary": "Get Microsoft Connection Status",
+        "description": "Check if user has Microsoft account connected",
+        "operationId": "get_microsoft_connection_status_api_auth_microsoft_status__user_id__get",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "User Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/clinic/create-clinic": {
+      "post": {
+        "tags": [
+          "Clinic Management",
+          "Clinic Management"
+        ],
+        "summary": "Create Clinic",
+        "description": "Create a new clinic with admin user.\nRequires superadmin access.",
+        "operationId": "create_clinic_api_clinic_create_clinic_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_create_clinic_api_clinic_create_clinic_post"
+              }
+            }
+          },
+          "required": true
         },
-        "PasswordResetWithUser": {
-          "properties": {
-            "new_password": {
-              "type": "string",
-              "title": "New Password"
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClinicCreateResponse"
+                }
+              }
             }
           },
-          "type": "object",
-          "required": [
-            "new_password"
-          ],
-          "title": "PasswordResetWithUser"
-        },
-        "RefreshTokenResponse": {
-          "properties": {
-            "access_token": {
-              "type": "string",
-              "title": "Access Token"
-            },
-            "token_type": {
-              "type": "string",
-              "title": "Token Type",
-              "default": "bearer"
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
             }
-          },
-          "type": "object",
-          "required": [
-            "access_token"
-          ],
-          "title": "RefreshTokenResponse",
-          "description": "Refresh token response schema",
-          "example": {
-            "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-            "token_type": "bearer"
           }
         },
-        "TotalTimeCreate": {
-          "properties": {
-            "agent_id": {
-              "type": "string",
-              "title": "Agent Id"
-            },
-            "duration": {
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/clinic/clinics": {
+      "get": {
+        "tags": [
+          "Clinic Management",
+          "Clinic Management"
+        ],
+        "summary": "Get All Clinics",
+        "description": "Get all clinics with their assigned integrations and forms. Requires superadmin access.",
+        "operationId": "get_all_clinics_api_clinic_clinics_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClinicListResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/clinic/update-clinic/{clinic_id}": {
+      "put": {
+        "tags": [
+          "Clinic Management",
+          "Clinic Management"
+        ],
+        "summary": "Update Clinic",
+        "description": "Update clinic details and access. Requires superadmin access.",
+        "operationId": "update_clinic_api_clinic_update_clinic__clinic_id__put",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "clinic_id",
+            "in": "path",
+            "required": true,
+            "schema": {
               "type": "integer",
-              "title": "Duration"
+              "title": "Clinic Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_update_clinic_api_clinic_update_clinic__clinic_id__put"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClinicUpdateResponse"
+                }
+              }
             }
           },
-          "type": "object",
-          "required": [
-            "agent_id",
-            "duration"
-          ],
-          "title": "TotalTimeCreate"
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/clinic/delete-clinic/{clinic_id}": {
+      "delete": {
+        "tags": [
+          "Clinic Management",
+          "Clinic Management"
+        ],
+        "summary": "Delete Clinic",
+        "description": "Delete a clinic (CASCADE will handle related records). Requires superadmin access.",
+        "operationId": "delete_clinic_api_clinic_delete_clinic__clinic_id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "clinic_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Clinic Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/clinic/clinic/{clinic_id}": {
+      "get": {
+        "tags": [
+          "Clinic Management",
+          "Clinic Management"
+        ],
+        "summary": "Get Clinic Details",
+        "description": "Get detailed information about a specific clinic. Requires superadmin access.",
+        "operationId": "get_clinic_details_api_clinic_clinic__clinic_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "clinic_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Clinic Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClinicDetailResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/clinic/resend-onboarding/{user_id}": {
+      "post": {
+        "tags": [
+          "Clinic Management",
+          "Clinic Management"
+        ],
+        "summary": "Resend Onboarding Link",
+        "description": "Resend onboarding email to a user. Requires superadmin access.",
+        "operationId": "resend_onboarding_link_api_clinic_resend_onboarding__user_id__post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "User Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/dashboard/stats": {
+      "get": {
+        "tags": [
+          "Dashboard",
+          "Dashboard"
+        ],
+        "summary": "Get Dashboard Stats",
+        "description": "Get detailed dashboard statistics",
+        "operationId": "get_dashboard_stats_api_dashboard_stats_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          }
         },
-        "TwilioNumberCreate": {
-          "properties": {
-            "phone_number": {
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/dashboard/user-services": {
+      "get": {
+        "tags": [
+          "Dashboard",
+          "Dashboard"
+        ],
+        "summary": "Get User Services",
+        "description": "Get integrations and forms accessible to the current user",
+        "operationId": "get_user_services_api_dashboard_user_services_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/dashboard/analytics": {
+      "get": {
+        "tags": [
+          "Dashboard",
+          "Dashboard"
+        ],
+        "summary": "Get Analytics",
+        "description": "Get analytics data for superadmin",
+        "operationId": "get_analytics_api_dashboard_analytics_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/dashboard/clinic-services/{clinic_id}": {
+      "get": {
+        "tags": [
+          "Dashboard",
+          "Dashboard"
+        ],
+        "summary": "Get Clinic Services",
+        "description": "Get all integrations and forms for a specific clinic",
+        "operationId": "get_clinic_services_api_dashboard_clinic_services__clinic_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "clinic_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Clinic Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/dashboard/external/google-calendar-clinics": {
+      "get": {
+        "tags": [
+          "Dashboard",
+          "Dashboard"
+        ],
+        "summary": "Get Google Calendar Clinics",
+        "description": "Proxy endpoint to fetch list of clinics with Google Calendar stats from external backend.\nReturns clinics list with pagination support.",
+        "operationId": "get_google_calendar_clinics_api_dashboard_external_google_calendar_clinics_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "title": "Page"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 10,
+              "title": "Per Page"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/dashboard/external/google-calendar-logs/{phone_number}": {
+      "get": {
+        "tags": [
+          "Dashboard",
+          "Dashboard"
+        ],
+        "summary": "Get Google Calendar Clinic Logs",
+        "description": "Proxy endpoint to fetch Google Calendar logs for a specific clinic by phone number.\nReturns logs with pagination support.",
+        "operationId": "get_google_calendar_clinic_logs_api_dashboard_external_google_calendar_logs__phone_number__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "phone_number",
+            "in": "path",
+            "required": true,
+            "schema": {
               "type": "string",
               "title": "Phone Number"
             }
           },
-          "type": "object",
-          "required": [
-            "phone_number"
-          ],
-          "title": "TwilioNumberCreate"
-        },
-        "TwilioNumberResponse": {
-          "properties": {
-            "twilio_id": {
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
               "type": "integer",
-              "title": "Twilio Id"
-            },
-            "phone_number": {
+              "minimum": 1,
+              "default": 1,
+              "title": "Page"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 10,
+              "title": "Per Page"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/dashboard/external/google-calendar-transcript/{phone_number}/{call_id}": {
+      "get": {
+        "tags": [
+          "Dashboard",
+          "Dashboard"
+        ],
+        "summary": "Get Google Calendar Transcript",
+        "description": "Proxy endpoint to fetch transcript for a specific call.\nReturns transcript data.",
+        "operationId": "get_google_calendar_transcript_api_dashboard_external_google_calendar_transcript__phone_number___call_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "phone_number",
+            "in": "path",
+            "required": true,
+            "schema": {
               "type": "string",
               "title": "Phone Number"
-            },
-            "friendly_name": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Friendly Name"
-            },
-            "assigned_to_agent_id": {
-              "anyOf": [
-                {
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Assigned To Agent Id"
-            },
-            "agent_name": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Agent Name"
-            },
-            "clinic_id": {
-              "anyOf": [
-                {
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Clinic Id"
-            },
-            "clinic_name": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Clinic Name"
-            },
-            "is_assigned": {
-              "type": "boolean",
-              "title": "Is Assigned"
-            },
-            "assigned_at": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "format": "date-time"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Assigned At"
-            },
-            "created_at": {
+            }
+          },
+          {
+            "name": "call_id",
+            "in": "path",
+            "required": true,
+            "schema": {
               "type": "string",
-              "format": "date-time",
-              "title": "Created At"
+              "title": "Call Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
             }
           },
-          "type": "object",
-          "required": [
-            "twilio_id",
-            "phone_number",
-            "friendly_name",
-            "assigned_to_agent_id",
-            "agent_name",
-            "clinic_id",
-            "clinic_name",
-            "is_assigned",
-            "assigned_at",
-            "created_at"
-          ],
-          "title": "TwilioNumberResponse"
-        },
-        "TwilioNumberUpdate": {
-          "properties": {
-            "friendly_name": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
-              ],
-              "title": "Friendly Name"
-            },
-            "assigned_to_agent_id": {
-              "anyOf": [
-                {
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Assigned To Agent Id"
-            },
-            "agent_name": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Agent Name"
-            },
-            "is_assigned": {
-              "anyOf": [
-                {
-                  "type": "boolean"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Is Assigned"
+              }
             }
-          },
-          "type": "object",
-          "title": "TwilioNumberUpdate"
+          }
+        }
+      }
+    },
+    "/api/admin/users": {
+      "get": {
+        "tags": [
+          "Admin",
+          "Admin"
+        ],
+        "summary": "Get Users",
+        "description": "Get users - superadmin sees all, clinic_admin sees only their clinic",
+        "operationId": "get_users_api_admin_users_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          }
         },
-        "UserInfoResponse": {
-          "properties": {
-            "user_id": {
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/admin/users/{user_id}": {
+      "get": {
+        "tags": [
+          "Admin",
+          "Admin"
+        ],
+        "summary": "Get User By Id",
+        "description": "Get specific user by ID",
+        "operationId": "get_user_by_id_api_admin_users__user_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
               "type": "integer",
               "title": "User Id"
-            },
-            "email": {
-              "type": "string",
-              "title": "Email"
-            },
-            "role": {
-              "type": "string",
-              "title": "Role"
-            },
-            "is_superadmin": {
-              "type": "boolean",
-              "title": "Is Superadmin"
-            },
-            "clinic_id": {
-              "anyOf": [
-                {
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
                 }
-              ],
-              "title": "Clinic Id"
-            },
-            "first_name": {
-              "type": "string",
-              "title": "First Name"
-            },
-            "last_name": {
-              "type": "string",
-              "title": "Last Name"
-            },
-            "clinic_name": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Clinic Name"
+              }
             }
           },
-          "type": "object",
-          "required": [
-            "user_id",
-            "email",
-            "role",
-            "is_superadmin",
-            "first_name",
-            "last_name"
-          ],
-          "title": "UserInfoResponse",
-          "description": "Current user info response schema"
-        },
-        "UserUpdate": {
-          "properties": {
-            "first_name": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
-              ],
-              "title": "First Name"
-            },
-            "last_name": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Last Name"
-            },
-            "mobile_number": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Mobile Number"
-            },
-            "role": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Role"
+              }
             }
-          },
-          "type": "object",
-          "title": "UserUpdate",
-          "description": "Request schema for updating user"
-        },
-        "ValidationError": {
-          "properties": {
-            "loc": {
-              "items": {
-                "anyOf": [
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "integer"
-                  }
-                ]
-              },
-              "type": "array",
-              "title": "Location"
-            },
-            "msg": {
-              "type": "string",
-              "title": "Message"
-            },
-            "type": {
-              "type": "string",
-              "title": "Error Type"
-            }
-          },
-          "type": "object",
-          "required": [
-            "loc",
-            "msg",
-            "type"
-          ],
-          "title": "ValidationError"
+          }
         }
       },
-      "securitySchemes": {
-        "HTTPBearer": {
-          "type": "http",
-          "scheme": "bearer"
+      "put": {
+        "tags": [
+          "Admin",
+          "Admin"
+        ],
+        "summary": "Update User",
+        "description": "Update user information",
+        "operationId": "update_user_api_admin_users__user_id__put",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "User Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Admin",
+          "Admin"
+        ],
+        "summary": "Delete User",
+        "description": "Deactivate (soft delete) a user - only superadmin",
+        "operationId": "delete_user_api_admin_users__user_id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "User Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/profile": {
+      "get": {
+        "tags": [
+          "Admin",
+          "Admin"
+        ],
+        "summary": "Get Admin Profile",
+        "description": "Get current admin profile",
+        "operationId": "get_admin_profile_api_admin_profile_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/password/forgot-password": {
+      "post": {
+        "tags": [
+          "Password Management",
+          "Password Management"
+        ],
+        "summary": "Forgot Password",
+        "description": "Request password reset - sends email with reset link.\nNo authentication required.",
+        "operationId": "forgot_password_api_password_forgot_password_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForgotPasswordRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/password/reset-with-user/{encrypted_user_id}": {
+      "post": {
+        "tags": [
+          "Password Management",
+          "Password Management"
+        ],
+        "summary": "Reset Password With User",
+        "description": "Reset password using encrypted user ID - HIPAA compliant (no token storage)",
+        "operationId": "reset_password_with_user_api_password_reset_with_user__encrypted_user_id__post",
+        "parameters": [
+          {
+            "name": "encrypted_user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Encrypted User Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PasswordResetWithUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/password/verify-user/{encrypted_user_id}": {
+      "get": {
+        "tags": [
+          "Password Management",
+          "Password Management"
+        ],
+        "summary": "Verify User For Reset",
+        "description": "Verify encrypted user ID and return user info",
+        "operationId": "verify_user_for_reset_api_password_verify_user__encrypted_user_id__get",
+        "parameters": [
+          {
+            "name": "encrypted_user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Encrypted User Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/password/generate-setup-token/{user_id}": {
+      "post": {
+        "tags": [
+          "Password Management",
+          "Password Management"
+        ],
+        "summary": "Generate Password Setup Token",
+        "description": "Generate encrypted token for onboarding password setup.\nUsed when new users need to set their initial password.",
+        "operationId": "generate_password_setup_token_api_password_generate_setup_token__user_id__post",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "User Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/twilio/": {
+      "get": {
+        "tags": [
+          "Twilio Numbers",
+          "Twilio Numbers"
+        ],
+        "summary": "Get Twilio Numbers",
+        "description": "Get all Twilio numbers with optional filtering",
+        "operationId": "get_twilio_numbers_api_twilio__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "assigned_only",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Assigned Only"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TwilioNumberResponse"
+                  },
+                  "title": "Response Get Twilio Numbers Api Twilio  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Twilio Numbers",
+          "Twilio Numbers"
+        ],
+        "summary": "Create Twilio Number",
+        "description": "Create a new Twilio number",
+        "operationId": "create_twilio_number_api_twilio__post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TwilioNumberCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TwilioNumberResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/twilio/available": {
+      "get": {
+        "tags": [
+          "Twilio Numbers",
+          "Twilio Numbers"
+        ],
+        "summary": "Get Available Twilio Numbers",
+        "description": "Get available (unassigned) Twilio numbers for clinic onboarding",
+        "operationId": "get_available_twilio_numbers_api_twilio_available_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TwilioNumberResponse"
+                  },
+                  "type": "array",
+                  "title": "Response Get Available Twilio Numbers Api Twilio Available Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/twilio/{twilio_id}": {
+      "put": {
+        "tags": [
+          "Twilio Numbers",
+          "Twilio Numbers"
+        ],
+        "summary": "Update Twilio Number",
+        "description": "Update a Twilio number",
+        "operationId": "update_twilio_number_api_twilio__twilio_id__put",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "twilio_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Twilio Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TwilioNumberUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TwilioNumberResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Twilio Numbers",
+          "Twilio Numbers"
+        ],
+        "summary": "Delete Twilio Number",
+        "description": "Soft delete a Twilio number",
+        "operationId": "delete_twilio_number_api_twilio__twilio_id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "twilio_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Twilio Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/login-tracking/track-login": {
+      "post": {
+        "tags": [
+          "Login Tracking",
+          "Login Tracking"
+        ],
+        "summary": "Track Login",
+        "description": "Track admin login event",
+        "operationId": "track_login_api_login_tracking_track_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginTrackingRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginTrackingResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/login-tracking/logout-session/{session_id}": {
+      "post": {
+        "tags": [
+          "Login Tracking",
+          "Login Tracking"
+        ],
+        "summary": "Logout Session",
+        "description": "Logout a specific session",
+        "operationId": "logout_session_api_login_tracking_logout_session__session_id__post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Session Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/time/total-time": {
+      "post": {
+        "tags": [
+          "Time Tracking",
+          "Time Tracking"
+        ],
+        "summary": "Create Or Update Total Time",
+        "description": "Create or update total time for an agent.\nIf agent_id exists, add to existing duration.\nNo authentication required - called by other services.",
+        "operationId": "create_or_update_total_time_api_time_total_time_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TotalTimeCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/time/sse/duration": {
+      "get": {
+        "tags": [
+          "Time Tracking",
+          "Time Tracking"
+        ],
+        "summary": "Sse Duration Stream",
+        "description": "Server-Sent Events endpoint for real-time duration updates.\nClients connect once and receive live updates when call durations change.",
+        "operationId": "sse_duration_stream_api_time_sse_duration_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/end_voice_session/{session_key}": {
+      "post": {
+        "tags": [
+          "Ezmedtech website"
+        ],
+        "summary": "End Voice Session",
+        "operationId": "end_voice_session_api_end_voice_session__session_key__post",
+        "parameters": [
+          {
+            "name": "session_key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Session Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
         }
       }
     }
+  },
+  "components": {
+    "schemas": {
+      "Body_create_clinic_api_clinic_create_clinic_post": {
+        "properties": {
+          "full_name": {
+            "type": "string",
+            "title": "Full Name"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "clinic_name": {
+            "type": "string",
+            "title": "Clinic Name"
+          },
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "title": "File"
+          },
+          "address_street": {
+            "type": "string",
+            "title": "Address Street",
+            "default": ""
+          },
+          "address_city": {
+            "type": "string",
+            "title": "Address City",
+            "default": ""
+          },
+          "address_state": {
+            "type": "string",
+            "title": "Address State",
+            "default": ""
+          },
+          "address_zip": {
+            "type": "string",
+            "title": "Address Zip",
+            "default": ""
+          },
+          "phone": {
+            "type": "string",
+            "title": "Phone"
+          },
+          "mobile_number": {
+            "type": "string",
+            "title": "Mobile Number"
+          },
+          "integration_access": {
+            "type": "string",
+            "title": "Integration Access",
+            "default": ""
+          },
+          "form_access": {
+            "type": "string",
+            "title": "Form Access",
+            "default": ""
+          },
+          "service_id": {
+            "type": "integer",
+            "title": "Service Id",
+            "default": 1
+          },
+          "fax": {
+            "type": "string",
+            "title": "Fax",
+            "default": ""
+          },
+          "website_url": {
+            "type": "string",
+            "title": "Website Url",
+            "default": ""
+          },
+          "csid": {
+            "type": "string",
+            "title": "Csid",
+            "default": ""
+          },
+          "twilio_numbers": {
+            "type": "string",
+            "title": "Twilio Numbers",
+            "default": "{}"
+          },
+          "developer_api_keys": {
+            "type": "string",
+            "title": "Developer Api Keys",
+            "default": "{}"
+          },
+          "shepherd_provider_names": {
+            "type": "string",
+            "title": "Shepherd Provider Names",
+            "default": "{}"
+          },
+          "shepherd_clinic_ids": {
+            "type": "string",
+            "title": "Shepherd Clinic Ids",
+            "default": "{}"
+          },
+          "clinic_schedule": {
+            "type": "string",
+            "title": "Clinic Schedule",
+            "default": "{}"
+          }
+        },
+        "type": "object",
+        "required": [
+          "full_name",
+          "email",
+          "clinic_name",
+          "phone",
+          "mobile_number"
+        ],
+        "title": "Body_create_clinic_api_clinic_create_clinic_post"
+      },
+      "Body_update_clinic_api_clinic_update_clinic__clinic_id__put": {
+        "properties": {
+          "clinic_name": {
+            "type": "string",
+            "title": "Clinic Name"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "phone": {
+            "type": "string",
+            "title": "Phone",
+            "default": ""
+          },
+          "address_street": {
+            "type": "string",
+            "title": "Address Street",
+            "default": ""
+          },
+          "address_city": {
+            "type": "string",
+            "title": "Address City",
+            "default": ""
+          },
+          "address_state": {
+            "type": "string",
+            "title": "Address State",
+            "default": ""
+          },
+          "address_zip": {
+            "type": "string",
+            "title": "Address Zip",
+            "default": ""
+          },
+          "integration_access": {
+            "type": "string",
+            "title": "Integration Access",
+            "default": ""
+          },
+          "form_access": {
+            "type": "string",
+            "title": "Form Access",
+            "default": ""
+          },
+          "service_id": {
+            "type": "integer",
+            "title": "Service Id",
+            "default": 1
+          },
+          "fax": {
+            "type": "string",
+            "title": "Fax",
+            "default": ""
+          },
+          "website_url": {
+            "type": "string",
+            "title": "Website Url",
+            "default": ""
+          },
+          "csid": {
+            "type": "string",
+            "title": "Csid",
+            "default": ""
+          },
+          "twilio_numbers": {
+            "type": "string",
+            "title": "Twilio Numbers",
+            "default": "{}"
+          },
+          "developer_api_keys": {
+            "type": "string",
+            "title": "Developer Api Keys",
+            "default": "{}"
+          },
+          "shepherd_provider_names": {
+            "type": "string",
+            "title": "Shepherd Provider Names",
+            "default": "{}"
+          },
+          "shepherd_clinic_ids": {
+            "type": "string",
+            "title": "Shepherd Clinic Ids",
+            "default": "{}"
+          },
+          "clinic_schedule": {
+            "type": "string",
+            "title": "Clinic Schedule",
+            "default": "{}"
+          },
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "title": "File"
+          }
+        },
+        "type": "object",
+        "required": [
+          "clinic_name",
+          "email"
+        ],
+        "title": "Body_update_clinic_api_clinic_update_clinic__clinic_id__put"
+      },
+      "ClinicCreateResponse": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "clinic_id": {
+            "type": "integer",
+            "title": "Clinic Id"
+          },
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "integrations_assigned": {
+            "type": "integer",
+            "title": "Integrations Assigned"
+          },
+          "forms_assigned": {
+            "type": "integer",
+            "title": "Forms Assigned"
+          }
+        },
+        "type": "object",
+        "required": [
+          "message",
+          "clinic_id",
+          "user_id",
+          "integrations_assigned",
+          "forms_assigned"
+        ],
+        "title": "ClinicCreateResponse",
+        "description": "Response schema for clinic creation"
+      },
+      "ClinicDetailResponse": {
+        "properties": {
+          "clinic": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Clinic"
+          },
+          "users": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Users"
+          },
+          "integrations": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Integrations"
+          },
+          "forms": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Forms"
+          },
+          "twilio_numbers": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Twilio Numbers"
+          }
+        },
+        "type": "object",
+        "required": [
+          "clinic",
+          "users",
+          "integrations",
+          "forms",
+          "twilio_numbers"
+        ],
+        "title": "ClinicDetailResponse",
+        "description": "Response schema for clinic details"
+      },
+      "ClinicListResponse": {
+        "properties": {
+          "clinics": {
+            "items": {
+              "$ref": "#/components/schemas/ClinicResponse"
+            },
+            "type": "array",
+            "title": "Clinics"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          }
+        },
+        "type": "object",
+        "required": [
+          "clinics",
+          "total"
+        ],
+        "title": "ClinicListResponse",
+        "description": "Response schema for clinic list"
+      },
+      "ClinicResponse": {
+        "properties": {
+          "clinic_id": {
+            "type": "integer",
+            "title": "Clinic Id"
+          },
+          "clinic_name": {
+            "type": "string",
+            "title": "Clinic Name"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          },
+          "address": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Address"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "service_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Service Id"
+          },
+          "fax": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fax"
+          },
+          "website_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Website Url"
+          },
+          "csid": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Csid"
+          },
+          "logo_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Logo Url"
+          },
+          "admin_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Admin Name"
+          },
+          "admin_mobile": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Admin Mobile"
+          },
+          "admin_user_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Admin User Id"
+          },
+          "clinic_schedule": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Clinic Schedule"
+          },
+          "integrations": {
+            "items": {
+              "$ref": "#/components/schemas/IntegrationInfo"
+            },
+            "type": "array",
+            "title": "Integrations",
+            "default": []
+          },
+          "forms": {
+            "items": {
+              "$ref": "#/components/schemas/FormInfo"
+            },
+            "type": "array",
+            "title": "Forms",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "clinic_id",
+          "clinic_name",
+          "email",
+          "created_at"
+        ],
+        "title": "ClinicResponse",
+        "description": "Response schema for clinic"
+      },
+      "ClinicUpdateResponse": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "clinic_id": {
+            "type": "integer",
+            "title": "Clinic Id"
+          },
+          "integrations_assigned": {
+            "type": "integer",
+            "title": "Integrations Assigned"
+          },
+          "forms_assigned": {
+            "type": "integer",
+            "title": "Forms Assigned"
+          }
+        },
+        "type": "object",
+        "required": [
+          "message",
+          "clinic_id",
+          "integrations_assigned",
+          "forms_assigned"
+        ],
+        "title": "ClinicUpdateResponse",
+        "description": "Response schema for clinic update"
+      },
+      "DecryptOnboardingRequest": {
+        "properties": {
+          "token": {
+            "type": "string",
+            "title": "Token"
+          }
+        },
+        "type": "object",
+        "required": [
+          "token"
+        ],
+        "title": "DecryptOnboardingRequest"
+      },
+      "ForgotPasswordRequest": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email"
+        ],
+        "title": "ForgotPasswordRequest"
+      },
+      "FormInfo": {
+        "properties": {
+          "form_id": {
+            "type": "integer",
+            "title": "Form Id"
+          },
+          "form_name": {
+            "type": "string",
+            "title": "Form Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "form_id",
+          "form_name"
+        ],
+        "title": "FormInfo",
+        "description": "Form information"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "IntegrationInfo": {
+        "properties": {
+          "integration_id": {
+            "type": "integer",
+            "title": "Integration Id"
+          },
+          "integration_name": {
+            "type": "string",
+            "title": "Integration Name"
+          },
+          "service_name": {
+            "type": "string",
+            "title": "Service Name"
+          },
+          "twilio_phone_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Twilio Phone Number"
+          },
+          "developer_api_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Developer Api Key"
+          },
+          "shepherd_provider_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shepherd Provider Name"
+          },
+          "shepherd_clinic_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shepherd Clinic Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "integration_id",
+          "integration_name",
+          "service_name"
+        ],
+        "title": "IntegrationInfo",
+        "description": "Integration information"
+      },
+      "LoginRequest": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "password": {
+            "type": "string",
+            "title": "Password"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "title": "LoginRequest",
+        "description": "Login request schema",
+        "example": {
+          "email": "user@example.com",
+          "password": "securepassword123"
+        }
+      },
+      "LoginResponse": {
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "title": "Access Token"
+          },
+          "token_type": {
+            "type": "string",
+            "title": "Token Type",
+            "default": "bearer"
+          },
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          },
+          "first_name": {
+            "type": "string",
+            "title": "First Name"
+          },
+          "last_name": {
+            "type": "string",
+            "title": "Last Name"
+          },
+          "clinic_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Clinic Id"
+          },
+          "clinic_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Clinic Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "access_token",
+          "user_id",
+          "email",
+          "role",
+          "first_name",
+          "last_name"
+        ],
+        "title": "LoginResponse",
+        "description": "Login response schema - access token sent to frontend",
+        "example": {
+          "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+          "clinic_id": 123,
+          "clinic_name": "Example Clinic",
+          "email": "user@example.com",
+          "first_name": "John",
+          "last_name": "Doe",
+          "role": "clinic_admin",
+          "token_type": "bearer",
+          "user_id": 1
+        }
+      },
+      "LoginTrackingRequest": {
+        "properties": {
+          "event_type": {
+            "type": "string",
+            "title": "Event Type"
+          },
+          "session_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Session Id"
+          },
+          "location_data": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Location Data"
+          }
+        },
+        "type": "object",
+        "required": [
+          "event_type"
+        ],
+        "title": "LoginTrackingRequest"
+      },
+      "LoginTrackingResponse": {
+        "properties": {
+          "tracking_id": {
+            "type": "integer",
+            "title": "Tracking Id"
+          },
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "clinic_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Clinic Id"
+          },
+          "event_type": {
+            "type": "string",
+            "title": "Event Type"
+          },
+          "event_timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Event Timestamp"
+          },
+          "session_id": {
+            "type": "string",
+            "title": "Session Id"
+          },
+          "location_data": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Location Data"
+          }
+        },
+        "type": "object",
+        "required": [
+          "tracking_id",
+          "user_id",
+          "clinic_id",
+          "event_type",
+          "event_timestamp",
+          "session_id",
+          "location_data"
+        ],
+        "title": "LoginTrackingResponse"
+      },
+      "PasswordResetWithUser": {
+        "properties": {
+          "new_password": {
+            "type": "string",
+            "title": "New Password"
+          }
+        },
+        "type": "object",
+        "required": [
+          "new_password"
+        ],
+        "title": "PasswordResetWithUser"
+      },
+      "RefreshTokenResponse": {
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "title": "Access Token"
+          },
+          "token_type": {
+            "type": "string",
+            "title": "Token Type",
+            "default": "bearer"
+          }
+        },
+        "type": "object",
+        "required": [
+          "access_token"
+        ],
+        "title": "RefreshTokenResponse",
+        "description": "Refresh token response schema",
+        "example": {
+          "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+          "token_type": "bearer"
+        }
+      },
+      "TotalTimeCreate": {
+        "properties": {
+          "agent_id": {
+            "type": "string",
+            "title": "Agent Id"
+          },
+          "duration": {
+            "type": "integer",
+            "title": "Duration"
+          }
+        },
+        "type": "object",
+        "required": [
+          "agent_id",
+          "duration"
+        ],
+        "title": "TotalTimeCreate"
+      },
+      "TwilioNumberCreate": {
+        "properties": {
+          "phone_number": {
+            "type": "string",
+            "title": "Phone Number"
+          }
+        },
+        "type": "object",
+        "required": [
+          "phone_number"
+        ],
+        "title": "TwilioNumberCreate"
+      },
+      "TwilioNumberResponse": {
+        "properties": {
+          "twilio_id": {
+            "type": "integer",
+            "title": "Twilio Id"
+          },
+          "phone_number": {
+            "type": "string",
+            "title": "Phone Number"
+          },
+          "friendly_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Friendly Name"
+          },
+          "assigned_to_agent_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assigned To Agent Id"
+          },
+          "agent_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Agent Name"
+          },
+          "clinic_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Clinic Id"
+          },
+          "clinic_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Clinic Name"
+          },
+          "is_assigned": {
+            "type": "boolean",
+            "title": "Is Assigned"
+          },
+          "assigned_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assigned At"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "twilio_id",
+          "phone_number",
+          "friendly_name",
+          "assigned_to_agent_id",
+          "agent_name",
+          "clinic_id",
+          "clinic_name",
+          "is_assigned",
+          "assigned_at",
+          "created_at"
+        ],
+        "title": "TwilioNumberResponse"
+      },
+      "TwilioNumberUpdate": {
+        "properties": {
+          "friendly_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Friendly Name"
+          },
+          "assigned_to_agent_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assigned To Agent Id"
+          },
+          "agent_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Agent Name"
+          },
+          "is_assigned": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Assigned"
+          }
+        },
+        "type": "object",
+        "title": "TwilioNumberUpdate"
+      },
+      "UserInfoResponse": {
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          },
+          "is_superadmin": {
+            "type": "boolean",
+            "title": "Is Superadmin"
+          },
+          "clinic_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Clinic Id"
+          },
+          "first_name": {
+            "type": "string",
+            "title": "First Name"
+          },
+          "last_name": {
+            "type": "string",
+            "title": "Last Name"
+          },
+          "clinic_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Clinic Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "email",
+          "role",
+          "is_superadmin",
+          "first_name",
+          "last_name"
+        ],
+        "title": "UserInfoResponse",
+        "description": "Current user info response schema"
+      },
+      "UserUpdate": {
+        "properties": {
+          "first_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "First Name"
+          },
+          "last_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Name"
+          },
+          "mobile_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mobile Number"
+          },
+          "role": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Role"
+          }
+        },
+        "type": "object",
+        "title": "UserUpdate",
+        "description": "Request schema for updating user"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    },
+    "securitySchemes": {
+      "HTTPBearer": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
   }
+}

@@ -1,6 +1,4 @@
-import { type Icon } from "@tabler/icons-react"
-import { motion, AnimatePresence } from "framer-motion"
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, type ComponentType } from "react"
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -17,7 +15,7 @@ export function NavMain({
   items: {
     title: string
     url: string
-    icon?: Icon
+    icon?: ComponentType<any>
     page?: string
   }[]
   onPageChange?: (page: string) => void
@@ -62,28 +60,16 @@ export function NavMain({
           ))}
         </SidebarMenu>
 
-        <AnimatePresence>
           {activeTabRect && (
-            <motion.div
+          <div
               className="absolute left-0 right-0 bg-primary/20 rounded-sm pointer-events-none"
-              initial={false}
-              animate={{
+            style={{
                 top: activeTabRect.top,
                 height: activeTabRect.height,
               }}
-              exit={{ opacity: 0 }}
-              transition={{
-                type: "spring",
-                stiffness: 200,
-                damping: 40,
-                mass: 1.5,
-              }}
             />
           )}
-        </AnimatePresence>
       </SidebarGroupContent>
     </SidebarGroup>
   )
 }
-
-

@@ -1,16 +1,24 @@
+import type { ServiceItem } from "@/components/services-config"
 import type { LoginResponse } from "@/api/auth"
 import { services } from "@/components/services-config"
+import { useSuperAdmin } from "@/contexts/super-admin-context"
 
 interface SuperAdminDashboardProps {
   user: LoginResponse
 }
 
 export function SuperAdminDashboard({ user }: SuperAdminDashboardProps) {
+  const { open } = useSuperAdmin()
   const applications = services.filter((s) => s.category === "applications")
   const analytics = services.filter((s) => s.category === "analytics")
 
   const handleCardClick = (title: string) => {
     const service = [...applications, ...analytics].find(s => s.title === title)
+    if (service?.id === "super-admin-dashboard") {
+      open()
+      return
+    }
+
     if (service?.url) {
       window.open(service.url, '_blank')
     } else {
@@ -31,7 +39,7 @@ export function SuperAdminDashboard({ user }: SuperAdminDashboardProps) {
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {applications.map((item) => {
-              const Icon = item.icon
+              const Icon = item.icon as ServiceItem["icon"]
               return (
                 <div
                   key={item.id}
@@ -47,7 +55,11 @@ export function SuperAdminDashboard({ user }: SuperAdminDashboardProps) {
                   }}
                 >
                   <div className="inline-flex items-center justify-center rounded-2xl bg-secondary w-14 h-14">
-                    <Icon className="w-7 h-7 text-foreground" />
+                    <Icon
+                      className="w-7 h-7"
+                      strokeWidth={1.5}
+                      style={item.color ? { color: item.color } : undefined}
+                    />
                   </div>
                   <h4 className="text-xl font-semibold text-left">
                     {item.title}
@@ -65,7 +77,7 @@ export function SuperAdminDashboard({ user }: SuperAdminDashboardProps) {
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {analytics.map((item) => {
-              const Icon = item.icon
+              const Icon = item.icon as ServiceItem["icon"]
               return (
                 <div
                   key={item.id}
@@ -81,7 +93,11 @@ export function SuperAdminDashboard({ user }: SuperAdminDashboardProps) {
                   }}
                 >
                   <div className="inline-flex items-center justify-center rounded-2xl bg-secondary w-14 h-14">
-                    <Icon className="w-7 h-7 text-foreground" />
+                    <Icon
+                      className="w-7 h-7"
+                      strokeWidth={1.5}
+                      style={item.color ? { color: item.color } : undefined}
+                    />
                   </div>
                   <h4 className="text-xl font-semibold text-left">
                     {item.title}
@@ -95,5 +111,3 @@ export function SuperAdminDashboard({ user }: SuperAdminDashboardProps) {
     </div>
   )
 }
-
-
